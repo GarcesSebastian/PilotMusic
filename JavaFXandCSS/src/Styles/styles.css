@@ -1,0 +1,13 @@
+#inputSearchMusic {
+    -fx-text-fill: black;
+    -fx-prompt-text-fill: #808080;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+}
+
+.list-cell:selected {
+    -fx-background-color: #cce5ff; /* Color de fondo cuando está seleccionado */
+    -fx-text-fill: black; /* Color del texto cuando está seleccionado */
+}
