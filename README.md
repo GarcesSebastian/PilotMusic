@@ -1,4 +1,5 @@
-# PilotMusic
+# PilotMusic - Alpha
+
 PilotMusic es un reproductor de música en desarrollo con una interfaz moderna, basado en JavaFX FXML Application.
 
 ## 🚀 Requisitos Previos
@@ -36,4 +37,4 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](https://
 
 **¡Gracias por utilizar PilotMusic! 🎧**
 
-**Nota:** Este proyecto está en desarrollo y puede tener cambios y actualizaciones frecuentes. Tu feedback es invaluable. ¡Disfruta la música! 🎶
+**Nota:** Este proyecto está en fase Alpha y puede tener cambios y actualizaciones frecuentes. Tu feedback es invaluable. ¡Disfruta la música! 🎶
