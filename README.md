@@ -22,14 +22,23 @@ PilotMusic es un reproductor de música en desarrollo con una interfaz moderna, 
    - Importa la base de datos proporcionada en tu gestor de base de datos.
    - Asegúrate de que el nombre de la base de datos sea "pilotmusic". Si prefieres otro nombre, modifica la línea de código que contiene el nombre de usuario de la base de datos en el proyecto.
 
-## 🎶 Funcionalidades
+## 🎶 Funcionalidades Destacadas
 
-- **Reproductor en Desarrollo**: PilotMusic está en constante mejora con nuevas funcionalidades.
-- **Guardado de Sonidos**: Los sonidos agregados se almacenan y están disponibles al iniciar sesión.
+- **Nueva interfaz de usuario moderna:** Disfruta de una interfaz de usuario renovada y fácil de usar.
+  
+- **Reproducción Básica:** Reproduce, detén, avanza y retrocede 10 segundos, ajusta el volumen y gestiona tu lista de reproducción.
 
-## ❗ Posibles Problemas
+- **Gestión de Sonidos:** Agrega y borra sonidos en tu lista de reproducción.
 
-- El reproductor puede tener errores de ejecución. Por favor, informa cualquier problema en la sección de problemas (Issues) de este repositorio.
+## ⚙️ Mejoras Generales
+
+- **Compatibilidad con versiones más recientes de Apache y MySQL:** PilotMusic ahora es compatible con Apache v2.4.56 y MySQL v15.1.
+
+- **Optimización del Rendimiento:** Hemos realizado mejoras significativas para garantizar un rendimiento más suave y rápido.
+
+## 🐞 Correcciones de Errores
+
+- **Resolución de Problemas de Estabilidad:** Se han abordado problemas reportados por los usuarios para garantizar una experiencia sin interrupciones.
 
 ## 📝 Licencia
 
