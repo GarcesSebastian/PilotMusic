@@ -17,6 +17,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -195,33 +196,49 @@ public class Controller implements Initializable {
     private void saveRoutesDB(String path) {
         ConexionBD connectNew = new ConexionBD();
         Connection connectDB = connectNew.getConnection();
-        
+
         if (numMusic > 0) {
             for (int i = 1; i < numMusic; i++) {
-                String createColumnRoutes = "ALTER TABLE sonidos ADD COLUMN ruta_" + i + " TEXT";
+                try {
+                    DatabaseMetaData metaData = connectDB.getMetaData();
+                    ResultSet columns = metaData.getColumns(null, null, "sonidos", "ruta_" + i);
 
-                try (PreparedStatement statement = connectDB.prepareStatement(createColumnRoutes)) {
-                    statement.executeUpdate();
-                    String url = listMusic.getItems().get(i-1).getPathURL();
-                    
+                    if (!columns.next()) {
+                        // La columna no existe, entonces la creamos
+                        String createColumnRoutes = "ALTER TABLE sonidos ADD COLUMN ruta_" + i + " TEXT";
+                        try (PreparedStatement statement = connectDB.prepareStatement(createColumnRoutes)) {
+                            statement.executeUpdate();
+                        }
+                    }
+
+                    // Actualizamos el valor de la columna
+                    String url = listMusic.getItems().get(i - 1).getPathURL();
                     String saveRouteItem = "UPDATE sonidos SET ruta_" + i + " = ? WHERE id = ?";
-                    
-                    try(PreparedStatement saveRoutePst = connectDB.prepareStatement(saveRouteItem)){
+
+                    try (PreparedStatement saveRoutePst = connectDB.prepareStatement(saveRouteItem)) {
                         saveRoutePst.setString(1, url);
                         saveRoutePst.setInt(2, userID);
-                        
+
                         int rowsAffected = saveRoutePst.executeUpdate();
-                        
-                        if(rowsAffected > 0){
-                            System.out.println("Ruta " + i + " agregada con exito");
-                        }else{
+
+                        if (rowsAffected > 0) {
+                            System.out.println("Ruta " + i + " agregada con éxito");
+                        } else {
                             System.out.println("Hubo un error al agregar la ruta " + i);
                         }
-                        
-                    }catch(Exception e){
+
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } catch (Exception e) {
+
+                    // Eliminamos la columna si el valor es null
+                    String deleteNullRoutes = "UPDATE sonidos SET ruta_" + i + " = NULL WHERE ruta_" + i + " IS NULL";
+                    try (PreparedStatement deleteNullRoutesPst = connectDB.prepareStatement(deleteNullRoutes)) {
+                        deleteNullRoutesPst.executeUpdate();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -231,20 +248,20 @@ public class Controller implements Initializable {
     private void createRoutes(String username) {
         ConexionBD connectNew = new ConexionBD();
         Connection connectDB = connectNew.getConnection();
-        
+
         String getID = "SELECT id FROM registros WHERE username = ?";
         int userIDRoutes;
-        
+
         System.out.println(username);
 
         try (PreparedStatement getIDPst = connectDB.prepareStatement(getID)) {
             getIDPst.setString(1, username);
-            
+
             ResultSet resultSet = getIDPst.executeQuery();
-            
+
             if (resultSet.next()) {
                 userIDRoutes = resultSet.getInt("id");
-                
+
                 String existRoutes = "SELECT * FROM sonidos WHERE id = ?";
 
                 try (PreparedStatement existRoutesPst = connectDB.prepareStatement(existRoutes)) {
@@ -261,34 +278,36 @@ public class Controller implements Initializable {
                             String columnName = metaData.getColumnName(i);
                             String columnValue = resultSetRoutes.getString(i);
 
-                            String musicPath = columnValue;
+                            // Agrega esta condición para evitar procesar columnas con valores NULL
+                            if (columnValue != null) {
+                                String musicPath = columnValue;
 
-                            // Obtener el nombre real del archivo desde la ruta
-                            String musicFileName = new File(musicPath).getName();
+                                // Obtener el nombre real del archivo desde la ruta
+                                String musicFileName = new File(musicPath).getName();
 
-                            String musicURL = new File(musicPath).toURI().toString();
+                                String musicURL = new File(musicPath).toURI().toString();
 
-                            System.out.println(musicFileName + " " + musicPath + " " + musicURL);
+                                System.out.println(musicFileName + " " + musicPath + " " + musicURL);
 
-                            MusicItem newMusicItem = new MusicItem(musicPath, musicFileName, musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
-                            listMusic.getItems().add(newMusicItem);
-                            listMusic.getItems().removeIf(item -> item.getNameMusic().equals("No se han encontrado canciones"));
+                                MusicItem newMusicItem = new MusicItem(musicPath, musicFileName, musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
+                                listMusic.getItems().add(newMusicItem);
+                                listMusic.getItems().removeIf(item -> item.getNameMusic().equals("No se han encontrado canciones"));
+                            }
                         }
                     }
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                
+
             } else {
                 System.out.println("Usuario no encontrado en la base de datos.");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-    
+
     @FXML
     private void handleExit(ActionEvent event) {
         System.exit(0);
@@ -553,12 +572,11 @@ public class Controller implements Initializable {
 
                                     if (rowsAffected > 0) {
                                         
-                                        String saveRoutesQuery = "INSERT INTO sonidos (id, ruta_1) VALUES (?,?)";
+                                        String saveRoutesQuery = "INSERT INTO sonidos (id) VALUES (?)";
 
                                         try(PreparedStatement saveRoutePst = connectDB.prepareStatement(saveRoutesQuery)){
 
                                             saveRoutePst.setInt(1, id);
-                                            saveRoutePst.setString(2, "");
 
                                             int rowsAffectedRoutes = saveRoutePst.executeUpdate();
 
