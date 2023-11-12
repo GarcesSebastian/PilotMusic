@@ -34,6 +34,6 @@ PilotMusic es un proyecto de software de reproductor de música basado en JavaFX
 
 ## Licencia
 
-Este proyecto está bajo la Licencia Apache 2.0. Consulta el archivo [LICENSE](LICENSE) para obtener más detalles.
+Este proyecto está bajo la Licencia Apache 2.0. Consulta el archivo [LICENSE](https://github.com/GarcesSebastian/PilotMusic/blob/main/LICENSE.txt) para obtener más detalles.
 
 **Nota:** Este proyecto está en desarrollo y puede tener cambios y actualizaciones frecuentes.
