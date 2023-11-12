@@ -52,8 +52,8 @@
    <left>
       <AnchorPane prefHeight="500.0" prefWidth="350.0" style="-fx-background-color: #fafafa;" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="inputEmail" layoutX="45.0" layoutY="204.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="260.0" promptText="Correo Electronico" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;" />
-            <PasswordField layoutX="45.0" layoutY="260.0" prefHeight="36.0" prefWidth="260.0" promptText="Contraseña" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;" />
+            <TextField fx:id="inputUserOfLogin" layoutX="45.0" layoutY="204.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="260.0" promptText="Nombre de Usuario" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;" />
+            <PasswordField fx:id="inputPasswordOfLogin" layoutX="45.0" layoutY="260.0" prefHeight="36.0" prefWidth="260.0" promptText="Contraseña" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;" />
             <Label layoutX="92.0" layoutY="135.0" prefHeight="35.0" prefWidth="165.0" style="-fx-background-color: rgb(0,0,0,0);" text="Iniciar Sesion" textAlignment="JUSTIFY" wrapText="true">
                <font>
                   <Font name="Calibri Bold Italic" size="30.0" />
@@ -67,7 +67,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Label>
-            <Button fx:id="btnLoginOfLogin" layoutX="95.0" layoutY="375.0" mnemonicParsing="false" onAction="#changeScreenToReproductor" prefHeight="34.0" prefWidth="160.0" style="-fx-background-color: TOMATO; -fx-background-radius: 20; -fx-text-fill: white;" text="INICIAR SESION" textFill="WHITE" wrapText="true">
+            <Button fx:id="btnLoginOfLogin" layoutX="95.0" layoutY="375.0" mnemonicParsing="false" onAction="#eventLogin" prefHeight="34.0" prefWidth="160.0" style="-fx-background-color: TOMATO; -fx-background-radius: 20; -fx-text-fill: white;" text="INICIAR SESION" textFill="WHITE" wrapText="true">
                <font>
                   <Font name="Calibri Bold Italic" size="16.0" />
                </font>
@@ -80,6 +80,11 @@
                   <Image url="@../Img/logo.png" />
                </image>
             </ImageView>
+            <Label fx:id="spawnAlertLogin" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="429.0" prefHeight="17.0" prefWidth="321.0" style="-fx-text-fill: tomato;" textAlignment="CENTER" visible="false" wrapText="true">
+               <font>
+                  <Font name="Calibri Bold Italic" size="13.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </left>

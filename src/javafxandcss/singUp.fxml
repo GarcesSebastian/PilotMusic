@@ -52,14 +52,14 @@
    <left>
       <AnchorPane prefHeight="500.0" prefWidth="350.0" style="-fx-background-color: #fafafa;" BorderPane.alignment="CENTER">
          <children>
-            <TextField layoutX="45.0" layoutY="250.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="260.0" promptText="Correo Electronico" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;" />
-            <PasswordField layoutX="45.0" layoutY="303.0" prefHeight="36.0" prefWidth="260.0" promptText="Contraseña" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;" />
+            <TextField fx:id="inputEmailOfRegister" layoutX="45.0" layoutY="250.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="260.0" promptText="Correo Electronico" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;" />
+            <PasswordField fx:id="inputPasswordOfRegister" layoutX="45.0" layoutY="303.0" prefHeight="36.0" prefWidth="260.0" promptText="Contraseña" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;" />
             <Label layoutX="81.0" layoutY="125.0" prefHeight="35.0" prefWidth="187.0" style="-fx-background-color: rgb(0,0,0,0);" text="Crea tu Cuenta" textAlignment="JUSTIFY" wrapText="true">
                <font>
                   <Font name="Calibri Bold Italic" size="30.0" />
                </font>
             </Label>
-            <Button fx:id="btnRegister" layoutX="95.0" layoutY="370.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="160.0" style="-fx-background-color: TOMATO; -fx-background-radius: 20; -fx-text-fill: white;" text="CREAR CUENTA" textFill="WHITE" wrapText="true">
+            <Button fx:id="btnRegister" layoutX="95.0" layoutY="370.0" mnemonicParsing="false" onAction="#eventRegister" prefHeight="34.0" prefWidth="160.0" style="-fx-background-color: TOMATO; -fx-background-radius: 20; -fx-text-fill: white;" text="CREAR CUENTA" textFill="WHITE" wrapText="true">
                <font>
                   <Font name="Calibri Bold Italic" size="16.0" />
                </font>
@@ -72,7 +72,12 @@
                   <Image url="@../Img/logo.png" />
                </image>
             </ImageView>
-            <TextField layoutX="45.0" layoutY="192.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="260.0" promptText="Nombre de Usuario" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;" />
+            <TextField fx:id="inputUserOfRegister" layoutX="45.0" layoutY="192.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="36.0" prefWidth="260.0" promptText="Nombre de Usuario" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;" />
+            <Label fx:id="spawnAlert" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="420.0" prefHeight="17.0" prefWidth="321.0" style="-fx-text-fill: tomato;" textAlignment="CENTER" visible="false" wrapText="true">
+               <font>
+                  <Font name="Calibri Bold Italic" size="13.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </left>

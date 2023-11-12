@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
+
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="471.0" prefWidth="700.0" style="-fx-background-color: white; -fx-background-image: /Img/logo.png;" stylesheets="@../Styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxandcss.Controller">
    <top>
       <AnchorPane prefHeight="112.0" prefWidth="700.0" style="-fx-background-color: rgb(188,188,188, 0.1);" BorderPane.alignment="CENTER">
@@ -38,97 +39,9 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Pane layoutX="19.0" layoutY="35.0" prefHeight="61.0" prefWidth="661.0" style="-fx-background-color: rgb(0,0,0,0.2); -fx-background-radius: 5; -fx-border-color: black; -fx-border-radius: 5;">
+            <Pane layoutX="12.0" layoutY="59.0" prefHeight="397.0" prefWidth="675.0" style="-fx-background-color: rgb(0,0,0,0.5); -fx-background-radius: 3;">
                <children>
-                  <Button layoutX="140.0" layoutY="13.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" scaleZ="2.0" style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-border-radius: 2;">
-                     <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="PLAY" size="24">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </FontAwesomeIconView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Button layoutX="195.0" layoutY="13.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" scaleZ="2.0" style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-border-radius: 2;">
-                     <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="PAUSE" size="24">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </FontAwesomeIconView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Button layoutX="84.0" layoutY="13.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" scaleZ="2.0" style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-border-radius: 2;">
-                     <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="ROTATE_LEFT" size="24">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </FontAwesomeIconView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Button layoutX="29.0" layoutY="13.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" scaleZ="2.0" style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-border-radius: 2;">
-                     <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="BACKWARD" size="24">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </FontAwesomeIconView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Button layoutX="250.0" layoutY="13.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" scaleZ="2.0" style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-border-radius: 2;">
-                     <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="ROTATE_RIGHT" size="24">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </FontAwesomeIconView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Button fx:id="iconUser" layoutX="583.0" layoutY="13.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" scaleZ="2.0" style="-fx-background-color: white; -fx-background-radius: 4; -fx-border-radius: none; -fx-border-color: none;">
-                     <graphic>
-                        <FontAwesomeIconView glyphName="USER" size="24">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </FontAwesomeIconView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Button layoutX="305.0" layoutY="13.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" scaleZ="2.0" style="-fx-background-color: transparent; -fx-background-radius: 10; -fx-border-radius: 2;">
-                     <graphic>
-                        <FontAwesomeIconView fill="WHITE" glyphName="FORWARD" size="24">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </FontAwesomeIconView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-               </children>
-            </Pane>
-            <Pane layoutX="12.0" layoutY="121.0" prefHeight="335.0" prefWidth="675.0" style="-fx-background-color: rgb(0,0,0,0.2); -fx-background-radius: 3;">
-               <children>
-                  <AnchorPane layoutX="304.0" prefHeight="337.0" prefWidth="372.0">
+                  <AnchorPane layoutX="304.0" prefHeight="390.0" prefWidth="372.0">
                      <children>
                         <TextField fx:id="inputSearchMusic" layoutX="20.0" layoutY="22.0" prefHeight="30.0" prefWidth="291.0" promptText="Busca aqui.." style="-fx-background-color: F1F1F1; -fx-padding: 0 0 0 30;">
                            <font>
@@ -152,37 +65,93 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <ListView fx:id="listMusic" editable="true" fixedCellSize="0.0" layoutX="12.0" layoutY="80.0" prefHeight="243.0" prefWidth="349.0" style="-fx-background-radius: 5; -fx-background-color: white;" />
-                        <AnchorPane fx:id="itemEmptyListView" layoutX="12.0" layoutY="94.0" prefHeight="39.0" prefWidth="349.0" visible="false">
-                           <children>
-                              <Label fx:id="labelItemEmptyListView" layoutX="11.0" layoutY="5.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="327.0" text="No se encontraron canciones guardadas" wrapText="true">
-                                 <font>
-                                    <Font name="Calibri Bold Italic" size="14.0" />
-                                 </font>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </Label>
-                           </children>
-                        </AnchorPane>
+                        <ListView fx:id="listMusic" editable="true" fixedCellSize="0.0" focusTraversable="false" layoutX="12.0" layoutY="80.0" prefHeight="291.0" prefWidth="349.0" style="-fx-background-radius: 5; -fx-background-color: rgb(0,0,0,0.5);" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="337.0" prefWidth="304.0" style="-fx-background-color: yellow;">
+                  <AnchorPane prefHeight="390.0" prefWidth="304.0" style="-fx-background-color: transparent;">
                      <children>
-                        <ImageView fitHeight="144.0" fitWidth="149.0" layoutX="80.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Img/portada.jpg" />
-                           </image>
-                        </ImageView>
-                        <Button layoutX="253.0" layoutY="292.0" mnemonicParsing="false">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="VOLUME_UP" size="14" />
-                           </graphic>
-                        </Button>
-                        <Slider layoutX="260.0" layoutY="145.0" orientation="VERTICAL" style="-fx-background-color: transparent;" value="100.0" />
+                        <Slider fx:id="sliderVolume" layoutX="258.0" layoutY="293.0" max="1.0" orientation="VERTICAL" prefHeight="72.0" prefWidth="34.0" style="-fx-background-color: transparent;" value="100.0" />
+                        <Label fx:id="nameMusicReproductor" layoutX="14.0" layoutY="286.0" prefHeight="17.0" prefWidth="242.0" text="Nombre de la cancion" textFill="WHITE">
+                           <font>
+                              <Font name="Calibri Bold Italic" size="14.0" />
+                           </font>
+                        </Label>
+                        <Slider fx:id="durationSound" layoutX="14.0" layoutY="315.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="14.0" prefWidth="215.0" style="-fx-padding: 0;" />
+                        <Label fx:id="timeSound" layoutX="169.0" layoutY="348.0" text="0:00/0:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                           <font>
+                              <Font name="Calibri Bold Italic" size="13.0" />
+                           </font>
+                        </Label>
+                        <FontAwesomeIconView fx:id="iconVolume" fill="WHITE" glyphName="VOLUME_UP" layoutX="267.0" layoutY="373.0" size="18" />
+                        <FontAwesomeIconView fx:id="backSound" fill="WHITE" glyphName="BACKWARD" layoutX="31.0" layoutY="361.0" size="14">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </FontAwesomeIconView>
+                        <FontAwesomeIconView fx:id="backwardSound" fill="WHITE" glyphName="ROTATE_LEFT" layoutX="61.0" layoutY="360.0" size="14">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </FontAwesomeIconView>
+                        <FontAwesomeIconView fx:id="playAndPauseSound" fill="WHITE" glyphName="PLAY" layoutX="89.0" layoutY="360.0" size="14">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </FontAwesomeIconView>
+                        <FontAwesomeIconView fx:id="forwardSound" fill="WHITE" glyphName="ROTATE_RIGHT" layoutX="116.0" layoutY="361.0" size="14">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </FontAwesomeIconView>
+                        <FontAwesomeIconView fx:id="nextSound" fill="WHITE" glyphName="FORWARD" layoutX="145.0" layoutY="360.0" size="14">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </FontAwesomeIconView>
+                        <Slider fx:id="banda1" layoutX="40.0" layoutY="46.0" max="2000.0" min="80.0" orientation="VERTICAL" />
+                        <Slider fx:id="banda2" layoutX="105.0" layoutY="46.0" max="4000.0" min="2000.0" orientation="VERTICAL" />
+                        <Slider fx:id="banda3" layoutX="169.0" layoutY="46.0" max="8000.0" min="4000.0" orientation="VERTICAL" />
+                        <Slider fx:id="banda4" layoutX="229.0" layoutY="46.0" max="16000.0" min="8000.0" orientation="VERTICAL" />
+                        <Label fx:id="labelBanda1" layoutX="50.0" layoutY="177.0" text="80" textFill="WHITE">
+                           <font>
+                              <Font name="Calibri Bold Italic" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="labelBanda2" layoutX="108.0" layoutY="177.0" text="2000" textFill="WHITE">
+                           <font>
+                              <Font name="Calibri Bold Italic" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="labelBanda3" layoutX="173.0" layoutY="177.0" text="4000" textFill="WHITE">
+                           <font>
+                              <Font name="Calibri Bold Italic" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="labelBanda4" layoutX="233.0" layoutY="177.0" text="8000" textFill="WHITE">
+                           <font>
+                              <Font name="Calibri Bold Italic" size="13.0" />
+                           </font>
+                        </Label>
                      </children>
                   </AnchorPane>
                </children></Pane>
+            <Button fx:id="btnLogout" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#eventLogout" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: white; -fx-background-radius: 4; -fx-border-radius: none; -fx-border-color: none;">
+               <graphic>
+                  <FontAwesomeIconView glyphName="SIGN_OUT" rotate="180.0" size="24">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </FontAwesomeIconView>
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Label fx:id="labelNameUser" layoutX="62.0" layoutY="21.0" prefHeight="17.0" prefWidth="199.0" text="Name" textFill="WHITE">
+               <font>
+                  <Font name="Calibri Bold Italic" size="15.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </top>

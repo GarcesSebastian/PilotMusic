@@ -8,8 +8,9 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="JavaFXandCSS.jar" size="224488" download="eager" />
+    <jar href="JavaFXandCSS.jar" size="257957" download="eager" />
     <jar href="lib\fontawesomefx-8.9.jar" size="571068" download="eager" />
+    <jar href="lib\mysql-connector-j-8.2.0.jar" size="2489850" download="eager" />
   </resources>
   <jfx:javafx-desc  width="800" height="600" main-class="javafxandcss.PilotMusic"  name="JavaFXandCSS" />
   <update check="always"/>
