@@ -1,16 +1,18 @@
 # PilotMusic
 
-PilotMusic es un proyecto de software de reproductor de música basado en JavaFX FXML Application.
+![PilotMusic Logo](URL_DEL_LOGO)
 
-## Requisitos Previos
+PilotMusic es un reproductor de música en desarrollo con una interfaz moderna, basado en JavaFX FXML Application.
+
+## 🚀 Requisitos Previos
 
 - **Apache**: Se recomienda la versión 2.4.56.
 - **MySQL**: Se recomienda la versión 15.1.
-- **JDK**: Se requiere Java Development Kit versión 1.8.0_202.
+- **JDK**: Java Development Kit versión 1.8.0_202 es requerido.
 
-## Instalación
+## ⬇️ Instalación
 
-1. **Descargar el Proyecto**: Clona o descarga el proyecto desde este repositorio.
+1. **Descarga el Proyecto**: Clona o descarga el proyecto desde este repositorio.
 
 2. **Librerías Adicionales**: Asegúrate de tener las siguientes librerías instaladas y agregadas al proyecto:
 
@@ -22,18 +24,19 @@ PilotMusic es un proyecto de software de reproductor de música basado en JavaFX
    - Importa la base de datos proporcionada en tu gestor de base de datos.
    - Asegúrate de que el nombre de la base de datos sea "pilotmusic". Si prefieres otro nombre, modifica la línea de código que contiene el nombre de usuario de la base de datos en el proyecto.
 
-## Funcionalidades
+## 🎶 Funcionalidades
 
-- El software de reproductor está en desarrollo y actualmente cuenta con funcionalidades limitadas.
-- Las funciones como el ecualizador y el buscador aún no están implementadas.
-- Los sonidos agregados se guardan y estarán disponibles si vuelves a iniciar sesión con la misma cuenta.
+- **Reproductor en Desarrollo**: PilotMusic está en constante mejora con nuevas funcionalidades.
+- **Guardado de Sonidos**: Los sonidos agregados se almacenan y están disponibles al iniciar sesión.
 
-## Posibles Problemas
+## ❗ Posibles Problemas
 
-- El software de reproductor puede tener errores de ejecución. Informa cualquier problema en la sección de problemas (Issues) de este repositorio.
+- El reproductor puede tener errores de ejecución. Por favor, informa cualquier problema en la sección de problemas (Issues) de este repositorio.
 
-## Licencia
+## 📝 Licencia
 
-Este proyecto está bajo la Licencia Apache 2.0. Consulta el archivo [LICENSE](https://github.com/GarcesSebastian/PilotMusic/blob/main/LICENSE.txt) para obtener más detalles.
+Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](https://github.com/GarcesSebastian/PilotMusic/blob/main/LICENSE.txt) para más detalles.
 
-**Nota:** Este proyecto está en desarrollo y puede tener cambios y actualizaciones frecuentes.
+**¡Gracias por utilizar PilotMusic! 🎧**
+
+**Nota:** Este proyecto está en desarrollo y puede tener cambios y actualizaciones frecuentes. Tu feedback es invaluable. ¡Disfruta la música! 🎶
