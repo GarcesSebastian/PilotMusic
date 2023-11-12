@@ -1,7 +1,4 @@
 # PilotMusic
-
-![PilotMusic Logo](https://github.com/GarcesSebastian/PilotMusic/blob/main/src/Img/logo%20(1).png)
-
 PilotMusic es un reproductor de música en desarrollo con una interfaz moderna, basado en JavaFX FXML Application.
 
 ## 🚀 Requisitos Previos
