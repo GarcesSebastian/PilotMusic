@@ -13,15 +13,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +56,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.shape.Rectangle;
+import javax.crypto.KeyGenerator;
 /**
  *
  * @author Sebxs
@@ -61,10 +73,12 @@ public class Controller implements Initializable {
     private double xOffset;
     private double yOffset;  
     
-    public String nameUser;
-    public int userID;
+    private String nameUser;
+    private int userID;
     
-    public int numMusic = 1;
+    private int numMusic = 1;
+    
+    private Boolean isFirstMusic = true;
     
     @FXML
     private Label labelNameUser;
@@ -111,12 +125,112 @@ public class Controller implements Initializable {
     @FXML
     private FontAwesomeIconView backSound;
     
+    @FXML
+    private TextField inputUserOfRegister;
+    
+    @FXML
+    private TextField inputEmailOfRegister;
+    
+    @FXML
+    private PasswordField inputPasswordOfRegister;
+    
+    @FXML
+    public TextField inputUserOfLogin;
+    
+    @FXML
+    private PasswordField inputPasswordOfLogin;
+    
+    @FXML 
+    private Label spawnAlert;
+    
+    @FXML 
+    private Label spawnAlertLogin;
+    
+    @FXML
+    private Pane spawnProfile;
+    
+    @FXML
+    private Button btnLogout;
+    
+    @FXML
+    private Pane containerRectangles;
+    
+    Connection con;
+    PreparedStatement pst;
+    ResultSet rs;
+        
+    @FXML
+    private TextField inputSearchMusic;
+    
+    private static final String ALGORITHM = "AES";
+    private static final String CHARSET = "UTF-8";
+    private String secretKey;
+    
+    public void getKeySecurity(){
+        ConexionBD connectNew = new ConexionBD();
+        Connection connectDB = connectNew.getConnection();
+        
+        String getKeyQuery = "SELECT * FROM keysecurity WHERE id = ? ";
+        
+        try(PreparedStatement getKeyPst = connectDB.prepareStatement(getKeyQuery)){
+            
+            getKeyPst.setInt(1, 110012);
+            
+            ResultSet resultGetKey = getKeyPst.executeQuery();
+            
+            if(resultGetKey.next()){
+                this.secretKey = resultGetKey.getString("key");
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String encrypt(String data, String secretKey) throws Exception {
+        SecretKey key = new SecretKeySpec(secretKey.getBytes(CHARSET), ALGORITHM);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encryptedBytes = cipher.doFinal(data.getBytes());
+        return Base64.getEncoder().encodeToString(encryptedBytes);
+    }
+
+    public static String decrypt(String encryptedData, String secretKey) throws Exception {
+        SecretKey key = new SecretKeySpec(secretKey.getBytes(CHARSET), ALGORITHM);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+        return new String(decryptedBytes);
+    }
+    
     private void verifyIsEmptyListMusic() {
         if (listMusic.getItems().isEmpty()) {
             MusicItem newMusicItemEmpty = new MusicItem("No se han encontrado canciones", false);
             listMusic.getItems().add(newMusicItemEmpty);
         } else {
             listMusic.getItems().removeIf(item -> item.getNameMusic().equals("No se han encontrado canciones"));
+        }
+    }
+    
+    private void verifyIsFirstMusic(){
+        if(listMusic.getItems().size() > 0){
+            nameMusicReproductor.setText(listMusic.getItems().get(0).getNameMusic());
+            MusicItem item = listMusic.getItems().get(0);
+
+            Media sound = new Media(item.getMusicURL());
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            FontAwesomeIconView playIcon = item.getPlayIcon();
+
+
+            if(mediaPlayer != null){
+                mediaPlayer.setOnReady(() -> {
+                   timeSound.setText("0:00/" + formatDuration(mediaPlayer.getTotalDuration()));
+                });
+
+            }else{
+                System.out.println("MediaPlayer es Nulo");
+            }
+
         }
     }
     
@@ -162,36 +276,14 @@ public class Controller implements Initializable {
         }
 
     }
+        
+    private String formatDuration(Duration duration) {
+        int minutes = (int) duration.toMinutes();
+        int seconds = (int) duration.toSeconds() % 60;
+        return String.format("%d:%02d", minutes, seconds);
+    }
     
     private MediaPlayer mediaPlayerController;
-    
-    private void playMp3(String filePath) {
-        Media hit = new Media(new File(filePath).toURI().toString());
-
-        if (mediaPlayerController != null) {
-            mediaPlayerController.stop();
-            mediaPlayerController.dispose();
-        }
-
-        mediaPlayerController = new MediaPlayer(hit);
-
-        mediaPlayerController.setOnReady(() -> {
-            Duration duration = hit.getDuration();
-            int durationInSeconds = (int) duration.toSeconds();
-
-            mediaPlayerController.play();
-
-            System.out.println("Duración del archivo MP3 en segundos: " + durationInSeconds);
-
-            mediaPlayerController.setOnEndOfMedia(() -> {
-                mediaPlayerController.stop();
-            });
-        });
-
-        mediaPlayerController.setOnError(() -> {
-            System.out.println("Error al reproducir el archivo MP3");
-        });
-    }
     
     private void saveRoutesDB(String path) {
         ConexionBD connectNew = new ConexionBD();
@@ -216,14 +308,12 @@ public class Controller implements Initializable {
                     String saveRouteItem = "UPDATE sonidos SET ruta_" + i + " = ? WHERE id = ?";
 
                     try (PreparedStatement saveRoutePst = connectDB.prepareStatement(saveRouteItem)) {
-                        saveRoutePst.setString(1, url);
+                        saveRoutePst.setString(1, encrypt(url, this.secretKey));
                         saveRoutePst.setInt(2, userID);
 
                         int rowsAffected = saveRoutePst.executeUpdate();
 
-                        if (rowsAffected > 0) {
-                            System.out.println("Ruta " + i + " agregada con éxito");
-                        } else {
+                        if (!(rowsAffected > 0)) {
                             System.out.println("Hubo un error al agregar la ruta " + i);
                         }
 
@@ -245,14 +335,12 @@ public class Controller implements Initializable {
         }
     }
 
-    private void createRoutes(String username) {
+    public void createRoutes(String username) {
         ConexionBD connectNew = new ConexionBD();
         Connection connectDB = connectNew.getConnection();
 
         String getID = "SELECT id FROM registros WHERE username = ?";
         int userIDRoutes;
-
-        System.out.println(username);
 
         try (PreparedStatement getIDPst = connectDB.prepareStatement(getID)) {
             getIDPst.setString(1, username);
@@ -278,24 +366,21 @@ public class Controller implements Initializable {
                             String columnName = metaData.getColumnName(i);
                             String columnValue = resultSetRoutes.getString(i);
 
-                            // Agrega esta condición para evitar procesar columnas con valores NULL
                             if (columnValue != null) {
-                                String musicPath = columnValue;
+                                String musicPath = decrypt(columnValue,this.secretKey);
 
-                                // Obtener el nombre real del archivo desde la ruta
                                 String musicFileName = new File(musicPath).getName();
 
                                 String musicURL = new File(musicPath).toURI().toString();
 
-                                System.out.println(musicFileName + " " + musicPath + " " + musicURL);
-
-                                MusicItem newMusicItem = new MusicItem(musicPath, musicFileName, musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
+                                MusicItem newMusicItem = new MusicItem(containerRectangles, musicPath, musicFileName, musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
                                 listMusic.getItems().add(newMusicItem);
                                 listMusic.getItems().removeIf(item -> item.getNameMusic().equals("No se han encontrado canciones"));
                             }
                         }
                     }
-
+                    
+                    verifyIsFirstMusic();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -448,8 +533,6 @@ public class Controller implements Initializable {
             String musicName = selectedFile.getName();
             String musicPath = selectedFile.getAbsolutePath();
             String musicURL = selectedFile.toURI().toString();
-            
-            System.out.println(musicName + " " + musicPath + " " + musicURL);
 
             ObservableList<MusicItem> itemsToAdd = FXCollections.observableArrayList();
 
@@ -461,14 +544,12 @@ public class Controller implements Initializable {
                     .anyMatch(item -> item.getMusicURL().equals(musicURL));
 
             if (!musicAlreadyExists) {
-                MusicItem newMusicItem = new MusicItem(musicPath, musicName, musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
-                listMusic.getItems().add(newMusicItem);
-
-                String projectDirectory = System.getProperty("user.dir") + File.separator + "src"  + File.separator + "Sounds" + File.separator + "sound2.mp3";
+                String projectDirectory = System.getProperty("user.dir") + File.separator + "src"  + File.separator + "Sounds" + File.separator + musicName;
                 String originDirectory = musicPath;
-
-                System.out.println(projectDirectory);
-                System.out.println(originDirectory);
+                
+                MusicItem newMusicItem = new MusicItem(containerRectangles, projectDirectory, musicName, musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
+                listMusic.getItems().add(newMusicItem);
+                verifyIsFirstMusic();
 
                 try (InputStream inputStream = new FileInputStream(originDirectory);
                      OutputStream outputStream = new FileOutputStream(projectDirectory)) {
@@ -489,38 +570,6 @@ public class Controller implements Initializable {
             }
         }
     }
-
-    @FXML
-    private TextField inputUserOfRegister;
-    
-    @FXML
-    private TextField inputEmailOfRegister;
-    
-    @FXML
-    private PasswordField inputPasswordOfRegister;
-    
-    @FXML
-    public TextField inputUserOfLogin;
-    
-    @FXML
-    private PasswordField inputPasswordOfLogin;
-    
-    @FXML 
-    private Label spawnAlert;
-    
-    @FXML 
-    private Label spawnAlertLogin;
-    
-    @FXML
-    private Pane spawnProfile;
-    
-    @FXML
-    private Button btnLogout;
-    
-    
-    Connection con;
-    PreparedStatement pst;
-    ResultSet rs;
    
     @FXML
     private void eventRegister() throws SQLException {
@@ -581,8 +630,6 @@ public class Controller implements Initializable {
                                             int rowsAffectedRoutes = saveRoutePst.executeUpdate();
 
                                             if(rowsAffectedRoutes > 0){
-                                                System.out.println("Ruta guardada con exito");
-                                                System.out.println("Registro exitoso");
                                                 inputUserOfRegister.setText("");
                                                 inputEmailOfRegister.setText("");
                                                 inputPasswordOfRegister.setText("");
@@ -662,7 +709,6 @@ public class Controller implements Initializable {
                     String storedHash = resultSet.getString("password");
     
                     if (checkPassword(pass, storedHash)) {
-                        System.out.println("Inicio de sesión exitoso");
                         inputUserOfLogin.setText("");
                         inputPasswordOfLogin.setText("");
                         
@@ -679,9 +725,7 @@ public class Controller implements Initializable {
 
                             int rowsUpdated = statePst.executeUpdate();
 
-                            if (rowsUpdated > 0) {
-                                System.out.println("Se actualizaron los cambios correctamente");
-                            } else {
+                            if (!(rowsUpdated > 0)) {
                                 System.out.println("No se realizaron cambios");
                             }
                         } catch (SQLException e) {
@@ -720,6 +764,13 @@ public class Controller implements Initializable {
     
     @FXML
     private void eventLogout(){
+        
+        for(MusicItem item : listMusic.getItems()){
+            if(item.isLoaded()){
+                item.pauseSound();
+            }
+        }
+        
         ConexionBD connectNew = new ConexionBD();
         Connection connectDB = connectNew.getConnection();
         
@@ -732,7 +783,6 @@ public class Controller implements Initializable {
             int rowsUpdated = statePst.executeUpdate();
 
             if (rowsUpdated > 0) {
-                System.out.println("Se actualizaron los cambios correctamente");
                 try {
                     Stage currentStage = (Stage) btnLogout.getScene().getWindow();
 
@@ -775,33 +825,48 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
     }
-    
-    @FXML
-    private String formatDuration(Duration duration) {
-        int minutes = (int) duration.toMinutes();
-        int seconds = (int) duration.toSeconds() % 60;
-        return String.format("%d:%02d", minutes, seconds);
-    }
 
-    
-    @FXML
-    private TextField inputSearchMusic;
-
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        getKeySecurity();
+
         try {
             if(listMusic != null){
                 
                 verifyIsEmptyListMusic();
-                
                 
                 if(playAndPauseSound != null){
                     playAndPauseSound.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
                             try {
-                                if (listMusic.getItems().filtered(item -> item.getNameMusic().equals("No se han encontrado canciones")) != null) {
+                                
+                                if(isFirstMusic && nameMusicReproductor.getText().equals(listMusic.getItems().get(0).getNameMusic())){
+                                    System.out.println("HAAAAAAAAAAAA");
+                                    MusicItem item = listMusic.getItems().get(0);
+
+                                    FontAwesomeIconView playIcon = item.getPlayIcon();
+
+                                    if (item.isLoaded()) {
+                                        if ("STOP_CIRCLE".equals(playIcon.getGlyphName()) && "PAUSE".equals(playAndPauseSound.getGlyphName())) {
+                                            item.pauseSound();
+                                            item.setLoadedState(false);
+                                            isFirstMusic = false;
+                                            playIcon.setGlyphName("PLAY_CIRCLE");
+                                            playAndPauseSound.setGlyphName("PLAY");
+                                        }
+                                    } else if (!item.isLoaded() && item.getNameMusic().equals(nameMusicReproductor.getText())) {
+                                        if ("PLAY_CIRCLE".equals(playIcon.getGlyphName()) && "PLAY".equals(playAndPauseSound.getGlyphName())) {
+                                            item.startSound(item.getNameMusic(), item.getMusicURL());
+                                            isFirstMusic = false;
+                                            item.setLoadedState(false);
+                                            
+                                            nameMusicReproductor.setText(item.getNameMusic());
+                                            playIcon.setGlyphName("STOP_CIRCLE");
+                                            playAndPauseSound.setGlyphName("PAUSE");
+                                        }
+                                    }
+                                }else if (listMusic.getItems().filtered(item -> item.getNameMusic().equals("No se han encontrado canciones")) != null) {
                                     for (MusicItem item : listMusic.getItems()) {
                                         MediaPlayer mediaPlayer = item.getMediaPlayer();
                                         FontAwesomeIconView playIcon = item.getPlayIcon();
@@ -845,9 +910,33 @@ public class Controller implements Initializable {
                     nextSound.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
+                            isFirstMusic = false;
                             if (listMusic.getItems().filtered(item -> item.getNameMusic().equals("No se han encontrado canciones")) != null) {
                                 for (MusicItem item : listMusic.getItems()) {
                                     if (item.isLoaded()) {
+                                        int currentPosition = listMusic.getItems().indexOf(item);
+                                        int nextPosition = currentPosition + 1;
+                                        if (nextPosition < listMusic.getItems().size()) {
+                                            durationSound.setValue(0);
+                                            item.pauseSound();
+                                            MusicItem nextItem = listMusic.getItems().get(nextPosition);
+                                            nextItem.startSound(nextItem.getNameMusic(), nextItem.getMusicURL());
+                                        
+                                            MediaPlayer mediaPlayer = nextItem.getMediaPlayer();
+                                            FontAwesomeIconView playIcon = nextItem.getPlayIcon();
+                                        
+                                            mediaPlayer.setOnEndOfMedia(() -> {
+                                                mediaPlayer.pause();
+                                                item.setLoadedState(false);
+                                                durationSound.setValue(0);
+                                                
+                                                playIcon.setGlyphName("PLAY_CIRCLE");
+                                                playAndPauseSound.setGlyphName("PLAY");
+                                            });
+                                        } else {
+                                            System.out.println("No hay siguiente elemento en la lista.");
+                                        }
+                                    }else if(item.getNameMusic().equals(nameMusicReproductor.getText())){
                                         int currentPosition = listMusic.getItems().indexOf(item);
                                         int nextPosition = currentPosition + 1;
                                         if (nextPosition < listMusic.getItems().size()) {
@@ -881,9 +970,33 @@ public class Controller implements Initializable {
                     backSound.setOnMouseClicked(new EventHandler<MouseEvent>() {
                         @Override
                         public void handle(MouseEvent event) {
+                            isFirstMusic = false;
                             if (listMusic.getItems().filtered(item -> item.getNameMusic().equals("No se han encontrado canciones")) != null) {
                                 for (MusicItem item : listMusic.getItems()) {
                                     if (item.isLoaded()) {
+                                        int currentPosition = listMusic.getItems().indexOf(item);
+                                        int nextPosition = currentPosition - 1;
+                                        if (nextPosition >= 0 && nextPosition < listMusic.getItems().size()) {
+                                            durationSound.setValue(0);
+                                            item.pauseSound();
+                                            MusicItem nextItem = listMusic.getItems().get(nextPosition);
+                                            nextItem.startSound(nextItem.getNameMusic(), nextItem.getMusicURL());
+                                            
+                                            MediaPlayer mediaPlayer = nextItem.getMediaPlayer();
+                                            FontAwesomeIconView playIcon = nextItem.getPlayIcon();
+                                            
+                                            mediaPlayer.setOnEndOfMedia(() -> {
+                                                mediaPlayer.pause();
+                                                item.setLoadedState(false);
+                                                durationSound.setValue(0);
+
+                                                playIcon.setGlyphName("PLAY_CIRCLE");
+                                                playAndPauseSound.setGlyphName("PLAY");
+                                            });
+                                        } else {
+                                            System.out.println("No hay siguiente elemento en la lista.");
+                                        }
+                                    }else if(item.getNameMusic().equals(nameMusicReproductor.getText())){
                                         int currentPosition = listMusic.getItems().indexOf(item);
                                         int nextPosition = currentPosition - 1;
                                         if (nextPosition >= 0 && nextPosition < listMusic.getItems().size()) {
@@ -953,7 +1066,6 @@ public class Controller implements Initializable {
                 
                 if(sliderVolume != null){
                     sliderVolume.valueProperty().addListener((observable, oldValue, newValue) -> {
-                        System.out.println(listMusic.getSelectionModel().getSelectedItem().getMediaPlayer());
                         if((double) newValue <= 0.0){
                             iconVolume.setGlyphName("VOLUME_OFF");
                         }else if((double) newValue <= 0.5){
@@ -968,10 +1080,107 @@ public class Controller implements Initializable {
                     inputSearchMusic.textProperty().addListener(new ChangeListener<String>() {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                            System.out.println("Texto cambiado a: " + newValue);
+                            try {
+                                ConexionBD connectNew = new ConexionBD();
+                                Connection connectDB = connectNew.getConnection();
+                                Boolean isEquals = true;
+                                
+                                if(!newValue.isEmpty()){
+                                    String getDataUser = "SELECT * FROM registros WHERE username = ?";
+                                
+                                    try(PreparedStatement getDataUserPst = connectDB.prepareStatement(getDataUser)){
+                                        getDataUserPst.setString(1, labelNameUser.getText());
+                                        ResultSet resultGetDataUser = getDataUserPst.executeQuery();
+
+                                        if(resultGetDataUser.next()){
+                                            int storedID = resultGetDataUser.getInt("id");
+
+                                            String getURLSounds = "SELECT * FROM sonidos WHERE id = ?";
+
+                                            try(PreparedStatement getURLSoundsPst = connectDB.prepareStatement(getURLSounds)){
+                                                
+                                                getURLSoundsPst.setInt(1, storedID);
+                                                
+                                                ResultSet resultGetURLSounds = getURLSoundsPst.executeQuery();
+
+                                                ResultSetMetaData metaData = getURLSoundsPst.getMetaData();
+
+                                                int numColumns = metaData.getColumnCount();
+                                                
+                                                listMusic.getItems().clear();
+                                                
+                                                while(resultGetURLSounds.next()){
+                                                    for(int i = 2; i <= numColumns; i++){
+                                                        isEquals = true;
+                                                        String columnName = metaData.getColumnName(i);
+                                                        String columnValue = resultGetURLSounds.getString(i);
+                                                        
+                                                        String getSearchResult = "SELECT * FROM sonidos WHERE id = ?";
+                                                        
+                                                        try(PreparedStatement getSearchResultPst = connectDB.prepareStatement(getSearchResult)){
+                                                            
+                                                            getSearchResultPst.setInt(1, storedID);
+                                                            
+                                                            ResultSet resultGetSearch = getSearchResultPst.executeQuery();
+                                                            
+                                                            if(resultGetSearch.next()){
+                                                                
+                                                                String URLColumn = resultGetSearch.getString(i);
+                                                                
+                                                                URLColumn = decrypt(URLColumn, secretKey);
+                                                                
+                                                                File file = new File(URLColumn);
+                                                                
+                                                                char[] nameFileChar = file.getName().toCharArray();
+                                                                char[] newValueChar = newValue.toCharArray();
+                                                                
+                                                                for(int j = 0; j < newValueChar.length; j++){
+                                                                    if(nameFileChar[j] != newValueChar[j]){
+                                                                        isEquals = false;
+                                                                        System.out.println("GOOOOOOOOOOOOOL");
+                                                                    }
+                                                                }
+                                                                
+                                                                if(isEquals){
+                                                                    String musicFileName = new File(URLColumn).getName();
+                                                                    String musicURL = new File(URLColumn).toURI().toString();
+                                                                    MusicItem newMusicItem = new MusicItem(containerRectangles, URLColumn, file.getName(), musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
+                                                                    listMusic.getItems().add(newMusicItem);
+                                                                    listMusic.getItems().removeIf(item -> item.getNameMusic().equals("No se han encontrado canciones"));
+                                                                }
+                                                                
+                                                            }else{
+                                                                System.out.println("No se encontraron resultados");
+                                                            }
+                                                            
+                                                            
+                                                        }catch(Exception e){
+                                                            e.printStackTrace();
+                                                        }
+                                                        
+                                                    }
+                                                }
+                                             
+                                            }catch(Exception e){
+                                                e.printStackTrace();
+                                            }
+                                            
+                                        }
+                                        
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                    }
+                                    
+                                }
+                                
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }
+
+                
                 
             }
 

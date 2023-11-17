@@ -12,10 +12,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="471.0" prefWidth="700.0" style="-fx-background-color: white; -fx-background-image: /Img/logo.png;" stylesheets="@../Styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxandcss.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="471.0" prefWidth="700.0" style="-fx-background-color: white;" stylesheets="@../Styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxandcss.Controller">
    <top>
       <AnchorPane prefHeight="112.0" prefWidth="700.0" style="-fx-background-color: rgb(188,188,188, 0.1);" BorderPane.alignment="CENTER">
          <children>
@@ -65,73 +65,63 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <ListView fx:id="listMusic" editable="true" fixedCellSize="0.0" focusTraversable="false" layoutX="12.0" layoutY="80.0" prefHeight="291.0" prefWidth="349.0" style="-fx-background-radius: 5; -fx-background-color: rgb(0,0,0,0.5);" />
+                        <ListView fx:id="listMusic" editable="true" fixedCellSize="0.0" focusTraversable="false" layoutX="6.0" layoutY="80.0" prefHeight="284.0" prefWidth="363.0" style="-fx-background-radius: 5; -fx-background-color: rgb(0,0,0,0.5);" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="390.0" prefWidth="304.0" style="-fx-background-color: transparent;">
                      <children>
-                        <Slider fx:id="sliderVolume" layoutX="258.0" layoutY="293.0" max="1.0" orientation="VERTICAL" prefHeight="72.0" prefWidth="34.0" style="-fx-background-color: transparent;" value="100.0" />
-                        <Label fx:id="nameMusicReproductor" layoutX="14.0" layoutY="286.0" prefHeight="17.0" prefWidth="242.0" text="Nombre de la cancion" textFill="WHITE">
+                        <Slider fx:id="sliderVolume" layoutX="257.0" layoutY="280.0" max="1.0" orientation="VERTICAL" prefHeight="72.0" prefWidth="34.0" style="-fx-background-color: transparent;" value="100.0" />
+                        <Label fx:id="nameMusicReproductor" layoutX="14.0" layoutY="271.0" prefHeight="17.0" prefWidth="242.0" text="Nombre de la cancion" textFill="WHITE">
                            <font>
                               <Font name="Calibri Bold Italic" size="14.0" />
                            </font>
                         </Label>
-                        <Slider fx:id="durationSound" layoutX="14.0" layoutY="315.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="14.0" prefWidth="215.0" style="-fx-padding: 0;" />
-                        <Label fx:id="timeSound" layoutX="169.0" layoutY="348.0" text="0:00/0:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                        <Slider fx:id="durationSound" layoutX="13.0" layoutY="302.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="14.0" prefWidth="215.0" style="-fx-padding: 0;" />
+                        <Label fx:id="timeSound" layoutX="175.0" layoutY="333.0" text="0:00/0:00" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                            <font>
                               <Font name="Calibri Bold Italic" size="13.0" />
                            </font>
                         </Label>
-                        <FontAwesomeIconView fx:id="iconVolume" fill="WHITE" glyphName="VOLUME_UP" layoutX="267.0" layoutY="373.0" size="18" />
-                        <FontAwesomeIconView fx:id="backSound" fill="WHITE" glyphName="BACKWARD" layoutX="31.0" layoutY="361.0" size="14">
+                        <FontAwesomeIconView fx:id="iconVolume" fill="WHITE" glyphName="VOLUME_UP" layoutX="266.0" layoutY="360.0" size="18" />
+                        <FontAwesomeIconView fx:id="backSound" fill="WHITE" glyphName="BACKWARD" layoutX="30.0" layoutY="348.0" size="14">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </FontAwesomeIconView>
-                        <FontAwesomeIconView fx:id="backwardSound" fill="WHITE" glyphName="ROTATE_LEFT" layoutX="61.0" layoutY="360.0" size="14">
+                        <FontAwesomeIconView fx:id="backwardSound" fill="WHITE" glyphName="ROTATE_LEFT" layoutX="60.0" layoutY="347.0" size="14">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </FontAwesomeIconView>
-                        <FontAwesomeIconView fx:id="playAndPauseSound" fill="WHITE" glyphName="PLAY" layoutX="89.0" layoutY="360.0" size="14">
+                        <FontAwesomeIconView fx:id="playAndPauseSound" fill="WHITE" glyphName="PLAY" layoutX="88.0" layoutY="347.0" size="14">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </FontAwesomeIconView>
-                        <FontAwesomeIconView fx:id="forwardSound" fill="WHITE" glyphName="ROTATE_RIGHT" layoutX="116.0" layoutY="361.0" size="14">
+                        <FontAwesomeIconView fx:id="forwardSound" fill="WHITE" glyphName="ROTATE_RIGHT" layoutX="115.0" layoutY="348.0" size="14">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </FontAwesomeIconView>
-                        <FontAwesomeIconView fx:id="nextSound" fill="WHITE" glyphName="FORWARD" layoutX="145.0" layoutY="360.0" size="14">
+                        <FontAwesomeIconView fx:id="nextSound" fill="WHITE" glyphName="FORWARD" layoutX="144.0" layoutY="347.0" size="14">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </FontAwesomeIconView>
-                        <Slider fx:id="banda1" layoutX="40.0" layoutY="46.0" max="2000.0" min="80.0" orientation="VERTICAL" />
-                        <Slider fx:id="banda2" layoutX="105.0" layoutY="46.0" max="4000.0" min="2000.0" orientation="VERTICAL" />
-                        <Slider fx:id="banda3" layoutX="169.0" layoutY="46.0" max="8000.0" min="4000.0" orientation="VERTICAL" />
-                        <Slider fx:id="banda4" layoutX="229.0" layoutY="46.0" max="16000.0" min="8000.0" orientation="VERTICAL" />
-                        <Label fx:id="labelBanda1" layoutX="50.0" layoutY="177.0" text="80" textFill="WHITE">
-                           <font>
-                              <Font name="Calibri Bold Italic" size="13.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="labelBanda2" layoutX="108.0" layoutY="177.0" text="2000" textFill="WHITE">
-                           <font>
-                              <Font name="Calibri Bold Italic" size="13.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="labelBanda3" layoutX="173.0" layoutY="177.0" text="4000" textFill="WHITE">
-                           <font>
-                              <Font name="Calibri Bold Italic" size="13.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="labelBanda4" layoutX="233.0" layoutY="177.0" text="8000" textFill="WHITE">
-                           <font>
-                              <Font name="Calibri Bold Italic" size="13.0" />
-                           </font>
-                        </Label>
+                        <Pane fx:id="containerRectangles" layoutX="27.0" layoutY="30.0" prefHeight="204.0" prefWidth="250.0" rotate="180.0">
+                           <children>
+                              <Rectangle fx:id="rectangle1" arcHeight="5.0" arcWidth="5.0" fill="#ff0088" height="24.0" layoutX="225.0" stroke="BLACK" strokeType="INSIDE" width="26.0" />
+                              <Rectangle fx:id="rectangle2" arcHeight="5.0" arcWidth="5.0" fill="#ff0074" height="24.0" layoutX="200.0" stroke="BLACK" strokeType="INSIDE" width="26.0" />
+                              <Rectangle fx:id="rectangle4" arcHeight="5.0" arcWidth="5.0" fill="#ff0024" height="24.0" layoutX="150.0" stroke="BLACK" strokeType="INSIDE" width="26.0" />
+                              <Rectangle fx:id="rectangle3" arcHeight="5.0" arcWidth="5.0" fill="#ff0044" height="24.0" layoutX="175.0" stroke="BLACK" strokeType="INSIDE" width="26.0" />
+                              <Rectangle fx:id="rectangle5" arcHeight="5.0" arcWidth="5.0" fill="#ff5800" height="24.0" layoutX="125.0" stroke="BLACK" strokeType="INSIDE" width="26.0" />
+                              <Rectangle fx:id="rectangle6" arcHeight="5.0" arcWidth="5.0" fill="#ff8200" height="24.0" layoutX="100.0" stroke="BLACK" strokeType="INSIDE" width="26.0" />
+                              <Rectangle fx:id="rectangle7" arcHeight="5.0" arcWidth="5.0" fill="#ffc600" height="24.0" layoutX="75.0" stroke="BLACK" strokeType="INSIDE" width="26.0" />
+                              <Rectangle fx:id="rectangle8" arcHeight="5.0" arcWidth="5.0" fill="#eaff00" height="24.0" layoutX="50.0" stroke="BLACK" strokeType="INSIDE" width="26.0" />
+                              <Rectangle fx:id="rectangle9" arcHeight="5.0" arcWidth="5.0" fill="#8cff00" height="24.0" layoutX="25.0" stroke="BLACK" strokeType="INSIDE" width="26.0" />
+                              <Rectangle fx:id="rectangle10" arcHeight="5.0" arcWidth="5.0" fill="#36d401" height="24.0" stroke="BLACK" strokeType="INSIDE" width="26.0" />
+                           </children>
+                        </Pane>
                      </children>
                   </AnchorPane>
                </children></Pane>
