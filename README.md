@@ -2,7 +2,7 @@
 
 PilotMusic es un reproductor de música en desarrollo con una interfaz moderna, basado en JavaFX FXML Application.
 
-## Preview
+## Avance
 
 ![PilotMusic Preview](url_de_tu_imagen.png)
 
