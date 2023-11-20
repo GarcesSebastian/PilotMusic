@@ -4,7 +4,7 @@ PilotMusic es un reproductor de música en desarrollo con una interfaz moderna, 
 
 ## Avance
 
-![PilotMusic Preview](url_de_tu_imagen.png)
+![PilotMusic Preview](https://github.com/GarcesSebastian/PilotMusic/blob/main/src/Img/Captura%20de%20pantalla%20(134).png)
 
 ## 🚀 Requisitos Previos
 
