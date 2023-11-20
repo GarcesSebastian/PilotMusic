@@ -222,16 +222,16 @@ public class MusicItem extends AnchorPane {
                                         mediaPlayer.setAudioSpectrumListener((double timestamp, double duration, float[] magnitudes, float[] phases) -> {
                                             double volume = mediaPlayer.getVolume();
 
-                                            for (int i = 0; i < magnitudes.length && i < 10; i++) {
+                                            for (int i = 0; i < magnitudes.length && i < 36; i++) {
                                                 double normalizedMagnitude = magnitudes[i] / 100.0;
                                                 double volumeAdjustedMagnitude = normalizedMagnitude * volume;
 
                                                 double minHeight = 0;
-                                                double maxHeight = 360;
+                                                double maxHeight = 400;
                                                 double heightValue = (minHeight + volumeAdjustedMagnitude * (maxHeight - minHeight));
 
                                                 Rectangle rectangle = (Rectangle) containerRectangles.lookup("#rectangle" + (i + 1) + "");
-                                                rectangle.setHeight((heightValue + 216 * volume) + 24);
+                                                rectangle.setHeight((heightValue + 246 * volume) + 24);
                                             }
                                         });
                                     }
@@ -521,16 +521,16 @@ public class MusicItem extends AnchorPane {
                             mediaPlayer.setAudioSpectrumListener((double timestamp, double duration, float[] magnitudes, float[] phases) -> {
                                 double volume = mediaPlayer.getVolume();
 
-                                for (int i = 0; i < magnitudes.length && i < 10; i++) {
+                                for (int i = 0; i < magnitudes.length && i < 36; i++) {
                                     double normalizedMagnitude = magnitudes[i] / 100.0;
                                     double volumeAdjustedMagnitude = normalizedMagnitude * volume;
 
                                     double minHeight = 0;
-                                    double maxHeight = 360;
+                                    double maxHeight = 400;
                                     double heightValue = (minHeight + volumeAdjustedMagnitude * (maxHeight - minHeight));
 
                                     Rectangle rectangle = (Rectangle) containerRectangles.lookup("#rectangle" + (i + 1) + "");
-                                    rectangle.setHeight((heightValue + 216 * volume) + 24);
+                                    rectangle.setHeight((heightValue + 246 * volume) + 24);
                                 }
                             });
                         }

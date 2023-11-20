@@ -60,6 +60,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.shape.Rectangle;
@@ -166,6 +167,14 @@ public class Controller implements Initializable {
     private static final String CHARSET = "UTF-8";
     private String secretKey;
     
+    public static String generateSecretKey() throws NoSuchAlgorithmException {
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(ALGORITHM);
+
+        SecretKey secretKey = keyGenerator.generateKey();
+
+        return Base64.getEncoder().encodeToString(secretKey.getEncoded());
+    }
+    
     public void getKeySecurity(){
         ConexionBD connectNew = new ConexionBD();
         Connection connectDB = connectNew.getConnection();
@@ -213,7 +222,7 @@ public class Controller implements Initializable {
     }
     
     private void verifyIsFirstMusic(){
-        if(listMusic.getItems().size() > 0){
+        if(listMusic.getItems().size() > 0 && !listMusic.getItems().get(0).getMusicURL().equals("No se han encontrado canciones")){
             nameMusicReproductor.setText(listMusic.getItems().get(0).getNameMusic());
             MusicItem item = listMusic.getItems().get(0);
 
@@ -524,53 +533,57 @@ public class Controller implements Initializable {
     @FXML
     private void addMusic(ActionEvent event) throws IOException {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleccionar archivo MP3");
+        fileChooser.setTitle("Seleccionar archivos MP3");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos MP3", "*.mp3"));
 
-        File selectedFile = fileChooser.showOpenDialog(new Stage());
+        // Habilitar la selección múltiple
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos MP3", "*.mp3"));
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
 
-        if (selectedFile != null) {
-            String musicName = selectedFile.getName();
-            String musicPath = selectedFile.getAbsolutePath();
-            String musicURL = selectedFile.toURI().toString();
-
+        if (selectedFiles != null && !selectedFiles.isEmpty()) {
             ObservableList<MusicItem> itemsToAdd = FXCollections.observableArrayList();
 
             if (!listMusic.getItems().isEmpty() && listMusic.getItems().get(0).getNameMusic().equals("No se han encontrado canciones")) {
                 listMusic.getItems().clear();
             }
 
-            boolean musicAlreadyExists = listMusic.getItems().stream()
-                    .anyMatch(item -> item.getMusicURL().equals(musicURL));
+            for (File selectedFile : selectedFiles) {
+                String musicName = selectedFile.getName();
+                String musicPath = selectedFile.getAbsolutePath();
+                String musicURL = selectedFile.toURI().toString();
 
-            if (!musicAlreadyExists) {
-                String projectDirectory = System.getProperty("user.dir") + File.separator + "src"  + File.separator + "Sounds" + File.separator + musicName;
-                String originDirectory = musicPath;
-                
-                MusicItem newMusicItem = new MusicItem(containerRectangles, projectDirectory, musicName, musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
-                listMusic.getItems().add(newMusicItem);
-                verifyIsFirstMusic();
+                boolean musicAlreadyExists = listMusic.getItems().stream()
+                        .anyMatch(item -> item.getMusicURL().equals(musicURL));
 
-                try (InputStream inputStream = new FileInputStream(originDirectory);
-                     OutputStream outputStream = new FileOutputStream(projectDirectory)) {
+                if (!musicAlreadyExists) {
+//                    String projectDirectory = System.getProperty("user.dir") + File.separator + "src" + File.separator + "Sounds" + File.separator + musicName;
+//                    String originDirectory = musicPath;
 
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
+                    MusicItem newMusicItem = new MusicItem(containerRectangles, musicPath, musicName, musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
+                    listMusic.getItems().add(newMusicItem);
+                    verifyIsFirstMusic();
 
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
+//                    try (InputStream inputStream = new FileInputStream(originDirectory);
+//                         OutputStream outputStream = new FileOutputStream(projectDirectory)) {
+//
+//                        byte[] buffer = new byte[4096];
+//                        int bytesRead;
+//
+//                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+//                            outputStream.write(buffer, 0, bytesRead);
+//                        }
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    numMusic = listMusic.getItems().size() + 1;
+                    saveRoutesDB(musicPath);
                 }
-
-                numMusic = listMusic.getItems().size() + 1;
-                saveRoutesDB(projectDirectory);
             }
         }
     }
-   
+
     @FXML
     private void eventRegister() throws SQLException {
         String user = inputUserOfRegister.getText();
@@ -1085,7 +1098,7 @@ public class Controller implements Initializable {
                                 Connection connectDB = connectNew.getConnection();
                                 Boolean isEquals = true;
                                 
-                                if(!newValue.isEmpty()){
+                                if(!newValue.trim().isEmpty()){
                                     String getDataUser = "SELECT * FROM registros WHERE username = ?";
                                 
                                     try(PreparedStatement getDataUserPst = connectDB.prepareStatement(getDataUser)){
@@ -1131,13 +1144,12 @@ public class Controller implements Initializable {
                                                                 
                                                                 File file = new File(URLColumn);
                                                                 
-                                                                char[] nameFileChar = file.getName().toCharArray();
-                                                                char[] newValueChar = newValue.toCharArray();
+                                                                char[] nameFileChar = file.getName().toLowerCase().trim().toCharArray();
+                                                                char[] newValueChar = newValue.toLowerCase().trim().toCharArray();
                                                                 
                                                                 for(int j = 0; j < newValueChar.length; j++){
                                                                     if(nameFileChar[j] != newValueChar[j]){
                                                                         isEquals = false;
-                                                                        System.out.println("GOOOOOOOOOOOOOL");
                                                                     }
                                                                 }
                                                                 
@@ -1171,6 +1183,66 @@ public class Controller implements Initializable {
                                         e.printStackTrace();
                                     }
                                     
+                                }else{
+                                    String getID = "SELECT id FROM registros WHERE username = ?";
+                                    int userIDRoutes;
+
+                                    try (PreparedStatement getIDPst = connectDB.prepareStatement(getID)) {
+                                        getIDPst.setString(1, labelNameUser.getText());
+
+                                        ResultSet resultSet = getIDPst.executeQuery();
+
+                                        if (resultSet.next()) {
+                                            userIDRoutes = resultSet.getInt("id");
+
+                                            String existRoutes = "SELECT * FROM sonidos WHERE id = ?";
+
+                                            try (PreparedStatement existRoutesPst = connectDB.prepareStatement(existRoutes)) {
+                                                existRoutesPst.setInt(1, userIDRoutes);
+
+                                                ResultSet resultSetRoutes = existRoutesPst.executeQuery();
+
+                                                ResultSetMetaData metaData = resultSetRoutes.getMetaData();
+
+                                                int numColumns = metaData.getColumnCount();
+
+                                                while (resultSetRoutes.next()) {
+                                                    for (int i = 2; i <= numColumns; i++) {
+                                                        String columnName = metaData.getColumnName(i);
+                                                        String columnValue = resultSetRoutes.getString(i);
+
+                                                        if (columnValue != null) {
+                                                            String musicPath = decrypt(columnValue, secretKey);
+
+                                                            String musicFileName = new File(musicPath).getName();
+
+                                                            // Verifica si ya existe un elemento con el mismo nombre
+                                                            boolean alreadyExists = listMusic.getItems().stream()
+                                                                    .anyMatch(item -> item.getNameMusic().equals(musicFileName));
+
+                                                            if (!alreadyExists) {
+                                                                String musicURL = new File(musicPath).toURI().toString();
+
+                                                                MusicItem newMusicItem = new MusicItem(containerRectangles, musicPath, musicFileName, musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
+                                                                listMusic.getItems().add(newMusicItem);
+                                                                listMusic.getItems().removeIf(item -> item.getNameMusic().equals("No se han encontrado canciones"));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                verifyIsFirstMusic();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        } else {
+                                            System.out.println("Usuario no encontrado en la base de datos.");
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
                                 }
                                 
                             } catch (Exception e) {
