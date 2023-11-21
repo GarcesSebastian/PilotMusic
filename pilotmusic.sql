@@ -43,6 +43,12 @@ CREATE TABLE `keysecurity` (
   `key` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `keysecurity`
+--
+
+INSERT INTO `keysecurity` (`id`, `key`) VALUES
+(110012, '4HESad8sGkD2vstvs6BLUQ==');
 -- --------------------------------------------------------
 
 --
