@@ -58,6 +58,8 @@ public class MusicItem extends AnchorPane {
     private Pane containerRectangles;
     private AudioEqualizer equalizer;
     
+    public ListView listMusic;
+    
     private Node getLastParentContainer(Node node) {
         Node current = node;
         Node lastParent = null;
@@ -169,6 +171,10 @@ public class MusicItem extends AnchorPane {
             if(backSound != null){
                 this.backSound = backSound;
             }
+            
+            if(listMusic != null){
+                this.listMusic = listMusic;
+            }
 
             nameLabel = new Label(musicName);
             playIcon = new FontAwesomeIconView();
@@ -208,7 +214,7 @@ public class MusicItem extends AnchorPane {
                             
                             timeSound.setText("0:00/" + formatDuration(mediaPlayer.getTotalDuration()));
 
-                            double valueSlider = durationSound.getValue();
+                            double valueSlider = 0;
                             mediaPlayer.seek(Duration.seconds(valueSlider));
                             mediaPlayer.play();
                             stateLoaded = true;
@@ -234,6 +240,13 @@ public class MusicItem extends AnchorPane {
                                                 rectangle.setHeight((heightValue + 246 * volume) + 24);
                                             }
                                         });
+                                        
+                                        for(int i = 0; i < listMusic.getItems().size(); i++){
+                                            MusicItem item = listMusic.getItems().get(i);
+                                            if(item.getNameMusic().equals(nameMusicReproductor.getText())){
+                                                listMusic.getSelectionModel().select(i);
+                                            }
+                                        }
                                     }
                                 });
                             });
@@ -242,6 +255,17 @@ public class MusicItem extends AnchorPane {
                                 mediaPlayer.pause();
                                 stateLoaded = false;
                                 durationSound.setValue(0);
+                                
+                                for(int i = 0; i < listMusic.getItems().size(); i++){
+                                    MusicItem item = listMusic.getItems().get(i);
+                                    if(item.getNameMusic().equals(MusicItem.this.getNameMusic())){
+                                        if(i+1 < listMusic.getItems().size()){
+                                            System.out.println(listMusic.getItems().size());
+                                            System.out.println(i+1);
+                                            listMusic.getItems().get(i+1).startSound(listMusic.getItems().get(i+1).getNameMusic(), listMusic.getItems().get(i+1).getMusicURL(), listMusic);
+                                        }
+                                    }
+                                }
                                 
                                 timeSound.setText("0:00/" + formatDuration(mediaPlayer.getTotalDuration()));
                                 playIcon.setGlyphName("PLAY_CIRCLE");
@@ -492,7 +516,7 @@ public class MusicItem extends AnchorPane {
         }
     }
     
-    public void startSound(String nameMusic, String URLmusic){
+    public void startSound(String nameMusic, String URLmusic, ListView<MusicItem> listMusic){
         if ((musicURL != null || !musicURL.isEmpty()) && "PLAY_CIRCLE".equals(playIcon.getGlyphName())) {
             if (mediaPlayer != null) {
                 mediaPlayer.stop();
@@ -533,6 +557,13 @@ public class MusicItem extends AnchorPane {
                                     rectangle.setHeight((heightValue + 246 * volume) + 24);
                                 }
                             });
+                            
+                            for(int i = 0; i < listMusic.getItems().size(); i++){
+                                MusicItem item = listMusic.getItems().get(i);
+                                if(item.getNameMusic().equals(nameMusicReproductor.getText())){
+                                    listMusic.getSelectionModel().select(i);
+                                }
+                            }
                         }
                     });
                 });
@@ -541,6 +572,17 @@ public class MusicItem extends AnchorPane {
                     mediaPlayer.pause();
                     stateLoaded = false;
                     durationSound.setValue(0);
+
+                    for(int i = 0; i < listMusic.getItems().size(); i++){
+                        MusicItem item = (MusicItem) listMusic.getItems().get(i);
+                        if(item.getNameMusic().equals(MusicItem.this.getNameMusic())){
+                            if(i+1 < listMusic.getItems().size()){
+                                System.out.println(listMusic.getItems().size());
+                                System.out.println(i+1);
+                                listMusic.getItems().get(i+1).startSound(listMusic.getItems().get(i+1).getNameMusic(), listMusic.getItems().get(i+1).getMusicURL(), listMusic);
+                            }
+                        }
+                    }
 
                     timeSound.setText("0:00/" + formatDuration(mediaPlayer.getTotalDuration()));
                     playIcon.setGlyphName("PLAY_CIRCLE");

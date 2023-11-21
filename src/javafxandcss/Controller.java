@@ -61,10 +61,24 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.shape.Rectangle;
 import javax.crypto.KeyGenerator;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 /**
  *
  * @author Sebxs
@@ -156,6 +170,27 @@ public class Controller implements Initializable {
     @FXML
     private Pane containerRectangles;
     
+    @FXML
+    private Button forgotPassword;
+    
+    @FXML
+    private Button btnExitSendCode;
+    
+    @FXML
+    private Button btnExitSendCodeEmail;
+    
+    @FXML
+    private TextField inputEmailOfSendCode;
+    
+    @FXML
+    private TextField inputCodeOfSendCode;
+    
+    @FXML
+    private Pane containerSendCode;
+    
+    @FXML
+    private Pane containerSendCodeEmail;
+    
     Connection con;
     PreparedStatement pst;
     ResultSet rs;
@@ -210,6 +245,80 @@ public class Controller implements Initializable {
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
         return new String(decryptedBytes);
+    }
+    
+    private Task<Void> createSendEmailTask(String email, int code) {
+        return new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                sendEmail(email, code);
+                return null;
+            }
+        };
+    }
+    
+    private void sendEmail(String email, int code){
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com"); // Cambia esto con tu servidor SMTP
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        // Autenticación
+        Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("sebastiangarces152@gmail.com", "ocxogzwntaaacecg");
+            }
+        };
+
+        // Creación de la sesión
+        Session session = Session.getInstance(props, auth);
+
+        try {
+            // Creación del mensaje
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("sebastiangarces152@gmail.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+            message.setSubject("Codigo de verificacion");
+            message.setText("Tu codigo de verificacion es " + code);
+
+            // Envío del mensaje
+            Transport.send(message);
+
+            System.out.println("Correo electrónico enviado con éxito.");
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("Error al enviar el correo electrónico: " + e.getMessage());
+        }
+    }
+    
+    private void sendCode(String mail, int code){
+        System.out.println("Enviando código...");
+        
+        Task<Void> sendEmailTask = createSendEmailTask(mail, code);
+
+        sendEmailTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent t) {
+                System.out.println("Correo electrónico enviado con éxito.");
+            }
+        });
+
+        sendEmailTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent t) {
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Error al enviar el correo electrónico");
+                alert.setContentText("Ocurrió un error al enviar el correo electrónico.");
+                alert.showAndWait();
+            }
+        });
+
+        Thread thread = new Thread(sendEmailTask);
+        thread.start();
     }
     
     private void verifyIsEmptyListMusic() {
@@ -290,6 +399,19 @@ public class Controller implements Initializable {
         int minutes = (int) duration.toMinutes();
         int seconds = (int) duration.toSeconds() % 60;
         return String.format("%d:%02d", minutes, seconds);
+    }
+    
+    private String formatIntAsDuration(int value) {
+        int minutes = value / 60;
+        int seconds = value % 60;
+        return String.format("%d:%02d", minutes, seconds);
+    }
+
+    private int parseDurationStringToInt(String durationString) {
+        String[] parts = durationString.split(":");
+        int minutes = Integer.parseInt(parts[0]);
+        int seconds = Integer.parseInt(parts[1]);
+        return minutes * 60 + seconds;
     }
     
     private MediaPlayer mediaPlayerController;
@@ -401,7 +523,106 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
     }
+    
+    @FXML
+    private void eventForgotPassword(ActionEvent event) {
+        containerSendCode.setVisible(true);
+    }
 
+    @FXML
+    private void eventExitSendCode(ActionEvent event){
+        containerSendCode.setVisible(false);
+    }
+    
+    @FXML
+    private void eventExitSendCodeEmail(ActionEvent event){
+        containerSendCodeEmail.setVisible(false);
+    }
+    
+    @FXML
+    private void eventSendCode(ActionEvent event){
+        if(isValidEmail(inputEmailOfSendCode.getText())){
+            String email = inputEmailOfSendCode.getText();
+            ConexionBD connectNew = new ConexionBD();
+            Connection connectDB = connectNew.getConnection();
+            
+            String getUserData = "SELECT * FROM registros WHERE email = ?";
+            
+            try(PreparedStatement getUserDataPst = connectDB.prepareStatement(getUserData)){
+                getUserDataPst.setString(1, email);
+                
+                ResultSet resultGetUserData = getUserDataPst.executeQuery();
+                
+                if(resultGetUserData.next()){
+                    int storedID = resultGetUserData.getInt("id");
+                    int randomCode = (int) (Math.random() * 900000) + 100000;
+                    
+                    String getUserCode = "SELECT * FROM codes WHERE id = ?";
+                    
+                    try(PreparedStatement getUserCodePst = connectDB.prepareStatement(getUserCode)){
+                        getUserCodePst.setInt(1, storedID);
+                        
+                        ResultSet rlsGetUserCode = getUserCodePst.executeQuery();
+                        
+                        if(rlsGetUserCode.next()){
+                            String setUserCode = "UPDATE codes SET code = ? WHERE id = ?";
+                            
+                            try(PreparedStatement setUserCodePst = connectDB.prepareStatement(setUserCode)){
+                                setUserCodePst.setInt(1, randomCode);
+                                setUserCodePst.setInt(2, storedID);
+                                
+                                int rowsAffected = setUserCodePst.executeUpdate();
+                                
+                                if(rowsAffected > 0){
+                                    sendCode(email,randomCode);
+                                    containerSendCode.setVisible(false);
+                                    containerSendCodeEmail.setVisible(true);
+                                }
+                            }
+                        }else{
+                            String setUserCode = "INSERT INTO codes (id, code) VALUES (?,?)";
+
+                            try(PreparedStatement setUserCodePst = connectDB.prepareStatement(setUserCode)){
+                                setUserCodePst.setInt(1, storedID);
+                                setUserCodePst.setInt(2, randomCode);
+
+                                int rowsAffected = setUserCodePst.executeUpdate();
+
+                                if(rowsAffected > 0){
+                                    sendCode(email,randomCode);
+                                    containerSendCode.setVisible(false);
+                                    containerSendCodeEmail.setVisible(true);
+                                }
+
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                        
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            
+        }else{
+            System.out.println("Correo Electronico Incorrecto.");
+        }
+    }
+    
+    @FXML
+    private void eventSendCodeEmail(ActionEvent event){
+        
+        if(inputCodeOfSendCode.getText().matches("\\d+") && inputCodeOfSendCode.getText().length() == 6){
+            int code = Integer.parseInt(inputCodeOfSendCode.getText());
+            System.out.println(code);
+        }
+        
+    }
+    
     @FXML
     private void handleExit(ActionEvent event) {
         System.exit(0);
@@ -844,6 +1065,19 @@ public class Controller implements Initializable {
         getKeySecurity();
 
         try {
+                    
+            if (inputCodeOfSendCode != null && containerSendCodeEmail != null) {
+                inputCodeOfSendCode.textProperty().addListener((observable, oldValue, newValue) -> {
+                    Platform.runLater(() -> {
+                        if (!newValue.matches("\\d*") || newValue.length() > 6) {
+                            inputCodeOfSendCode.setText(oldValue);
+                        }
+                    });
+                });
+            } else {
+                System.out.println("El objeto inputCodeOfSendCode es nulo.");
+            }
+        
             if(listMusic != null){
                 
                 verifyIsEmptyListMusic();
@@ -855,7 +1089,7 @@ public class Controller implements Initializable {
                             try {
                                 
                                 if(isFirstMusic && nameMusicReproductor.getText().equals(listMusic.getItems().get(0).getNameMusic())){
-                                    System.out.println("HAAAAAAAAAAAA");
+                                    
                                     MusicItem item = listMusic.getItems().get(0);
 
                                     FontAwesomeIconView playIcon = item.getPlayIcon();
@@ -870,7 +1104,7 @@ public class Controller implements Initializable {
                                         }
                                     } else if (!item.isLoaded() && item.getNameMusic().equals(nameMusicReproductor.getText())) {
                                         if ("PLAY_CIRCLE".equals(playIcon.getGlyphName()) && "PLAY".equals(playAndPauseSound.getGlyphName())) {
-                                            item.startSound(item.getNameMusic(), item.getMusicURL());
+                                            item.startSound(item.getNameMusic(), item.getMusicURL(), listMusic);
                                             isFirstMusic = false;
                                             item.setLoadedState(false);
                                             
@@ -933,7 +1167,7 @@ public class Controller implements Initializable {
                                             durationSound.setValue(0);
                                             item.pauseSound();
                                             MusicItem nextItem = listMusic.getItems().get(nextPosition);
-                                            nextItem.startSound(nextItem.getNameMusic(), nextItem.getMusicURL());
+                                            nextItem.startSound(nextItem.getNameMusic(), nextItem.getMusicURL(), listMusic);
                                         
                                             MediaPlayer mediaPlayer = nextItem.getMediaPlayer();
                                             FontAwesomeIconView playIcon = nextItem.getPlayIcon();
@@ -956,7 +1190,7 @@ public class Controller implements Initializable {
                                             durationSound.setValue(0);
                                             item.pauseSound();
                                             MusicItem nextItem = listMusic.getItems().get(nextPosition);
-                                            nextItem.startSound(nextItem.getNameMusic(), nextItem.getMusicURL());
+                                            nextItem.startSound(nextItem.getNameMusic(), nextItem.getMusicURL(), listMusic);
                                         
                                             MediaPlayer mediaPlayer = nextItem.getMediaPlayer();
                                             FontAwesomeIconView playIcon = nextItem.getPlayIcon();
@@ -993,7 +1227,7 @@ public class Controller implements Initializable {
                                             durationSound.setValue(0);
                                             item.pauseSound();
                                             MusicItem nextItem = listMusic.getItems().get(nextPosition);
-                                            nextItem.startSound(nextItem.getNameMusic(), nextItem.getMusicURL());
+                                            nextItem.startSound(nextItem.getNameMusic(), nextItem.getMusicURL(), listMusic);
                                             
                                             MediaPlayer mediaPlayer = nextItem.getMediaPlayer();
                                             FontAwesomeIconView playIcon = nextItem.getPlayIcon();
@@ -1016,7 +1250,7 @@ public class Controller implements Initializable {
                                             durationSound.setValue(0);
                                             item.pauseSound();
                                             MusicItem nextItem = listMusic.getItems().get(nextPosition);
-                                            nextItem.startSound(nextItem.getNameMusic(), nextItem.getMusicURL());
+                                            nextItem.startSound(nextItem.getNameMusic(), nextItem.getMusicURL(), listMusic);
                                             
                                             MediaPlayer mediaPlayer = nextItem.getMediaPlayer();
                                             FontAwesomeIconView playIcon = nextItem.getPlayIcon();
@@ -1051,6 +1285,13 @@ public class Controller implements Initializable {
                                         double currentSeconds = mediaPlayer.getCurrentTime().toSeconds();
                                         double newTime = currentSeconds + 10.0;
                                         mediaPlayer.seek(Duration.seconds(newTime));
+                                    }else if(!item.isLoaded() && item.getNameMusic().equals(nameMusicReproductor.getText())){
+                                        String[] partsTimeSound = timeSound.getText().split("/");
+                                        String totalDurationSound = partsTimeSound[1].trim();
+                                        int totalDurationSoundINT = parseDurationStringToInt(totalDurationSound);
+                                        durationSound.setMax((double) totalDurationSoundINT);
+                                        durationSound.setValue(durationSound.getValue() + 10.0);
+                                        timeSound.setText(formatIntAsDuration((int) durationSound.getValue() ) + "/" + totalDurationSound);
                                     }
                                 }
                             }
@@ -1070,6 +1311,13 @@ public class Controller implements Initializable {
                                         double currentSeconds = mediaPlayer.getCurrentTime().toSeconds();
                                         double newTime = currentSeconds - 10.0;
                                         mediaPlayer.seek(Duration.seconds(newTime));
+                                    }else if(!item.isLoaded() && item.getNameMusic().equals(nameMusicReproductor.getText())){
+                                        String[] partsTimeSound = timeSound.getText().split("/");
+                                        String totalDurationSound = partsTimeSound[1].trim();
+                                        int totalDurationSoundINT = parseDurationStringToInt(totalDurationSound);
+                                        durationSound.setMax((double) totalDurationSoundINT);
+                                        durationSound.setValue(durationSound.getValue() - 10.0);
+                                        timeSound.setText(formatIntAsDuration((int) durationSound.getValue() ) + "/" + totalDurationSound);
                                     }
                                 }
                             }

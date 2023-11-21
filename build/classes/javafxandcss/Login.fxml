@@ -10,12 +10,13 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="471.0" prefWidth="700.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxandcss.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="471.0" prefWidth="700.0" style="-fx-background-color: white;" stylesheets="@../Styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxandcss.Controller">
    <right>
       <AnchorPane prefHeight="500.0" prefWidth="350.0" style="-fx-background-color: tomato; -fx-background-radius: 0;" BorderPane.alignment="CENTER">
-         <children>
+          <children>
             <Button fx:id="btnExit" layoutX="314.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleExit" prefHeight="21.0" prefWidth="32.0" style="-fx-background-color: tomato; -fx-text-fill: white;">
                <font>
                   <Font name="Calibri Bold" size="16.0" />
@@ -59,14 +60,6 @@
                   <Font name="Calibri Bold Italic" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="86.0" layoutY="327.0" prefHeight="18.0" prefWidth="178.0" text="¿Olvidaste tu contraseña?" textFill="#25d3f0">
-               <font>
-                  <Font name="Calibri Bold" size="16.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Label>
             <Button fx:id="btnLoginOfLogin" layoutX="95.0" layoutY="375.0" mnemonicParsing="false" onAction="#eventLogin" prefHeight="34.0" prefWidth="160.0" style="-fx-background-color: TOMATO; -fx-background-radius: 20; -fx-text-fill: white;" text="INICIAR SESION" textFill="WHITE" wrapText="true">
                <font>
                   <Font name="Calibri Bold Italic" size="16.0" />
@@ -85,6 +78,82 @@
                   <Font name="Calibri Bold Italic" size="13.0" />
                </font>
             </Label>
+            <Button fx:id="forgotPassword" layoutX="75.0" layoutY="323.0" mnemonicParsing="false" onAction="#eventForgotPassword" prefHeight="29.0" prefWidth="200.0" style="-fx-background-color: transparent;" text="¿Olvidaste tu contraseña?" textFill="#25d3f0">
+               <font>
+                  <Font name="Calibri Bold" size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Pane fx:id="containerSendCode" layoutX="26.0" layoutY="46.0" prefHeight="373.0" prefWidth="298.0" style="-fx-background-color: tomato; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" visible="false">
+               <children>
+                  <Button fx:id="btnExitSendCode" layoutX="263.0" layoutY="6.0" mnemonicParsing="false" onAction="#eventExitSendCode" prefHeight="27.0" prefWidth="30.0" style="-fx-background-color: none;">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="CLOSE" size="18">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </FontAwesomeIconView>
+                     </graphic>
+                  </Button>
+                  <Label layoutX="14.0" layoutY="33.0" prefHeight="160.0" prefWidth="270.0" text="Si ha olvidado su contraseña, ingrese su dirección de correo electrónico en el campo a continuación. Le enviaremos un correo electrónico con un codigo para restablecer su contraseña." textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Calibri Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="inputEmailOfSendCode" layoutX="19.0" layoutY="221.0" prefHeight="36.0" prefWidth="261.0" promptText="Correo Electronico" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;">
+                     <font>
+                        <Font name="Calibri Bold Italic" size="12.0" />
+                     </font>
+                  </TextField>
+                  <Button fx:id="btnSendCode" layoutX="102.0" layoutY="284.0" mnemonicParsing="false" onAction="#eventSendCode" prefHeight="33.0" prefWidth="94.0" text="Enviar">
+                     <font>
+                        <Font name="Calibri Bold" size="16.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+            </Pane>
+            <Pane fx:id="containerSendCodeEmail" layoutX="26.0" layoutY="46.0" prefHeight="373.0" prefWidth="298.0" style="-fx-background-color: tomato; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" visible="false">
+               <children>
+                  <Button fx:id="btnExitSendCodeEmail" layoutX="263.0" layoutY="6.0" mnemonicParsing="false" onAction="#eventExitSendCodeEmail" prefHeight="27.0" prefWidth="30.0" style="-fx-background-color: none;">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="CLOSE" size="18">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </FontAwesomeIconView>
+                     </graphic>
+                  </Button>
+                  <Label layoutX="14.0" layoutY="33.0" prefHeight="160.0" prefWidth="270.0" text="Le hemos enviado un código de verificación a su dirección de correo electrónico. Revise su bandeja de entrada e ingrese el código de verificación a continuación para continuar." textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="Calibri Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="inputCodeOfSendCode" layoutX="19.0" layoutY="221.0" prefHeight="36.0" prefWidth="261.0" promptText="Ingrese el codigo" style="-fx-background-color: F1F1F1; -fx-background-radius: 3; -fx-border-radius: 3;">
+                     <font>
+                        <Font name="Calibri Bold Italic" size="12.0" />
+                     </font>
+                  </TextField>
+                  <Button fx:id="btnSendCodeEmail" layoutX="102.0" layoutY="284.0" mnemonicParsing="false" onAction="#eventSendCodeEmail" prefHeight="33.0" prefWidth="94.0" text="Enviar">
+                     <font>
+                        <Font name="Calibri Bold" size="16.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+            </Pane>
          </children>
       </AnchorPane>
    </left>

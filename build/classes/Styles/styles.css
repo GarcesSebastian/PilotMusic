@@ -16,27 +16,41 @@
     -fx-opacity: 0;
 }
 
-/* Estilo para simular una barra de carga similar a YouTube Music */
-
-/* Contenedor del Slider */
 Slider {
-    -fx-control-inner-background: #ddd; /* Color de fondo de la barra de carga */
-    -fx-background-color: transparent; /* Color del riel de la barra de carga */
+    -fx-control-inner-background: #ddd;
+    -fx-background-color: transparent;
     -fx-padding: 10px;
     -fx-background-radius: 5px;
     -fx-border-radius: 5px;
-    -fx-background-insets: 0, 0; /* Ajusta el grosor de la línea del control-inner-background */
+    -fx-background-insets: 0, 0;
 }
 
-/* Estilo para el control deslizante del Slider (thumb) */
 Slider .thumb {
-    -fx-background-color: #ff0000; /* Color del círculo rojo en el slider */
-    -fx-background-radius: 50%; /* Hace que el círculo sea redondeado */
-    -fx-padding: 7px; /* Espaciado interno del círculo */
+    -fx-background-color: #ff0000;
+    -fx-background-radius: 50%;
+    -fx-padding: 7px;
 }
 
-/* Cambia el color del texto en el Slider (opcional) */
 Slider .value {
-    -fx-fill: black; /* Cambia el color del texto */
+    -fx-fill: black;
+}
+
+
+#btnSendCode:hover{
+    -fx-background-color: #0056b3;
+}
+
+#btnSendCode{
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+}
+
+#btnSendCodeEmail:hover{
+    -fx-background-color: #0056b3;
+}
+
+#btnSendCodeEmail{
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
 }
 
