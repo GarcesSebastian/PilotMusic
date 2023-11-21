@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-11-2023 a las 14:50:57
+-- Tiempo de generación: 21-11-2023 a las 09:26:15
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -43,13 +43,6 @@ CREATE TABLE `keysecurity` (
   `key` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `keysecurity`
---
-
-INSERT INTO `keysecurity` (`id`, `key`) VALUES
-(110012, '4HESad8sGkD2vstvs6BLUQ==');
-
 -- --------------------------------------------------------
 
 --
@@ -64,11 +57,6 @@ CREATE TABLE `registros` (
   `state` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `registros`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -76,16 +64,18 @@ CREATE TABLE `registros` (
 --
 
 CREATE TABLE `sonidos` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `sonidos`
---
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `codes`
+--
+ALTER TABLE `codes`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `registros`
