@@ -878,65 +878,65 @@ public class Controller implements Initializable {
         }
     }
     
-@FXML
-private void addMusic(ActionEvent event) {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Seleccionar archivos MP3");
-    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos MP3", "*.mp3"));
+    @FXML
+    private void addMusic(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar archivos MP3");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos MP3", "*.mp3"));
 
-    // Habilitar la selección múltiple
-    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos MP3", "*.mp3"));
-    List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
+        // Habilitar la selección múltiple
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos MP3", "*.mp3"));
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
 
-    if (selectedFiles != null && !selectedFiles.isEmpty()) {
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                ObservableList<MusicItem> itemsToAdd = FXCollections.observableArrayList();
+        if (selectedFiles != null && !selectedFiles.isEmpty()) {
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    ObservableList<MusicItem> itemsToAdd = FXCollections.observableArrayList();
 
-                if (!listMusic.getItems().isEmpty() && listMusic.getItems().get(0).getNameMusic().equals("No se han encontrado canciones")) {
-                    listMusic.getItems().clear();
-                }
-
-                for (File selectedFile : selectedFiles) {
-                    String musicName = selectedFile.getName();
-                    String musicPath = selectedFile.getAbsolutePath();
-                    String musicURL = selectedFile.toURI().toString();
-
-                    boolean musicAlreadyExists = listMusic.getItems().stream()
-                            .anyMatch(item -> item.getMusicURL().equals(musicURL));
-
-                    if (!musicAlreadyExists) {
-                        MusicItem newMusicItem = new MusicItem(
-                                containerRectangles, musicPath, musicName, musicURL, true, nameMusicReproductor,
-                                durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound,
-                                backwardSound, nextSound, backSound, iconVolume, listMusic);
-
-                        listMusic.getItems().add(newMusicItem);
-                        numMusic = listMusic.getItems().size() + 1;
-                        saveRoutesDB(musicPath);
+                    if (!listMusic.getItems().isEmpty() && listMusic.getItems().get(0).getNameMusic().equals("No se han encontrado canciones")) {
+                        listMusic.getItems().clear();
                     }
+
+                    for (File selectedFile : selectedFiles) {
+                        String musicName = selectedFile.getName();
+                        String musicPath = selectedFile.getAbsolutePath();
+                        String musicURL = selectedFile.toURI().toString();
+
+                        boolean musicAlreadyExists = listMusic.getItems().stream()
+                                .anyMatch(item -> item.getMusicURL().equals(musicURL));
+
+                        if (!musicAlreadyExists) {
+                            MusicItem newMusicItem = new MusicItem(
+                                    containerRectangles, musicPath, musicName, musicURL, true, nameMusicReproductor,
+                                    durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound,
+                                    backwardSound, nextSound, backSound, iconVolume, listMusic);
+
+                            saveRoutesDB(musicPath);
+                            listMusic.getItems().add(newMusicItem);
+                            numMusic = listMusic.getItems().size() + 1;
+                        }
+                    }
+
+                    // Realizar actualizaciones de la interfaz de usuario después de completar el bucle
+                    Platform.runLater(() -> {
+                        listMusic.getItems().addAll(itemsToAdd);
+                        verifyIsFirstMusic();
+                    });
+
+                    return null;
                 }
+            };
 
-                // Realizar actualizaciones de la interfaz de usuario después de completar el bucle
-                Platform.runLater(() -> {
-                    listMusic.getItems().addAll(itemsToAdd);
-                    verifyIsFirstMusic();
-                });
+            // Configurar manejo de excepciones, si es necesario
+            task.setOnFailed(e -> task.getException().printStackTrace());
 
-                return null;
-            }
-        };
-
-        // Configurar manejo de excepciones, si es necesario
-        task.setOnFailed(e -> task.getException().printStackTrace());
-
-        // Iniciar la tarea en segundo plano
-        Thread thread = new Thread(task);
-        thread.setDaemon(true); // Hacer que el hilo sea daemon para que se cierre cuando la aplicación principal se cierre
-        thread.start();
+            // Iniciar la tarea en segundo plano
+            Thread thread = new Thread(task);
+            thread.setDaemon(true); // Hacer que el hilo sea daemon para que se cierre cuando la aplicación principal se cierre
+            thread.start();
+        }
     }
-}
 
     @FXML
     private void eventRegister() throws SQLException {
