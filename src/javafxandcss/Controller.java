@@ -912,7 +912,7 @@ private void addMusic(ActionEvent event) {
                                 durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound,
                                 backwardSound, nextSound, backSound, iconVolume, listMusic);
 
-                        itemsToAdd.add(newMusicItem);
+                        listMusic.getItems().add(newMusicItem);
                         numMusic = listMusic.getItems().size() + 1;
                         saveRoutesDB(musicPath);
                     }
