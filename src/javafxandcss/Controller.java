@@ -90,6 +90,7 @@ public class Controller implements Initializable {
     
     private String nameUser;
     private int userID;
+    public int codeID;
     
     private int numMusic = 1;
     
@@ -180,16 +181,28 @@ public class Controller implements Initializable {
     private Button btnExitSendCodeEmail;
     
     @FXML
+    private Button btnExitSendPassword;
+    
+    @FXML
     private TextField inputEmailOfSendCode;
     
     @FXML
     private TextField inputCodeOfSendCode;
     
     @FXML
+    private PasswordField inputPasswordOfForgot;
+    
+    @FXML
+    private PasswordField inputPasswordOfForgot2;
+    
+    @FXML
     private Pane containerSendCode;
     
     @FXML
     private Pane containerSendCodeEmail;
+    
+    @FXML
+    private Pane containerSendPassword;
     
     Connection con;
     PreparedStatement pst;
@@ -532,11 +545,20 @@ public class Controller implements Initializable {
     @FXML
     private void eventExitSendCode(ActionEvent event){
         containerSendCode.setVisible(false);
+        inputEmailOfSendCode.setText("");
     }
     
     @FXML
     private void eventExitSendCodeEmail(ActionEvent event){
         containerSendCodeEmail.setVisible(false);
+        inputCodeOfSendCode.setText("");
+    }
+    
+    @FXML
+    private void eventExitSendPassword(ActionEvent event){
+        containerSendPassword.setVisible(false);
+        inputPasswordOfForgot.setText("");
+        inputPasswordOfForgot2.setText("");
     }
     
     @FXML
@@ -592,6 +614,7 @@ public class Controller implements Initializable {
                                     sendCode(email,randomCode);
                                     containerSendCode.setVisible(false);
                                     containerSendCodeEmail.setVisible(true);
+                                    inputEmailOfSendCode.setText("");
                                 }
 
                             }catch(Exception e){
@@ -611,14 +634,118 @@ public class Controller implements Initializable {
         }else{
             System.out.println("Correo Electronico Incorrecto.");
         }
+        
+        
+        
     }
     
     @FXML
     private void eventSendCodeEmail(ActionEvent event){
         
         if(inputCodeOfSendCode.getText().matches("\\d+") && inputCodeOfSendCode.getText().length() == 6){
-            int code = Integer.parseInt(inputCodeOfSendCode.getText());
-            System.out.println(code);
+            ConexionBD connectNew = new ConexionBD();
+            Connection connectDB = connectNew.getConnection();
+            
+            String getCodeUser = "SELECT * FROM codes WHERE code = ?";
+            
+            try(PreparedStatement getCodeUserPst = connectDB.prepareStatement(getCodeUser)){
+                
+                getCodeUserPst.setInt(1, Integer.parseInt(inputCodeOfSendCode.getText()));
+                
+                ResultSet resultGetCodeUser = getCodeUserPst.executeQuery();
+                
+                if(resultGetCodeUser.next()){
+                    int codeID = resultGetCodeUser.getInt("id");
+                    this.codeID = codeID;
+                    containerSendCodeEmail.setVisible(false);
+                    containerSendPassword.setVisible(true);
+                    inputCodeOfSendCode.setText("");
+                }else{
+                    System.out.println("Codigo Incorrecto.");
+                }
+                
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            System.out.println("Codigo Incorrecto");
+        }
+        
+        
+        
+    }
+    
+    @FXML
+    private void eventSendPassword(ActionEvent event){
+        String password_1 = inputPasswordOfForgot.getText();
+        String password_2 = inputPasswordOfForgot2.getText();
+        
+        if(password_1.equals(password_2)){
+            
+            if(!password_1.isEmpty() || !password_2.isEmpty()){
+             
+                if(password_1.length() >= 8){
+                
+                    ConexionBD connectNew = new ConexionBD();
+                    Connection connectDB = connectNew.getConnection();
+                    
+                    String getPasswordUser = "SELECT * FROM registros WHERE id = ?";
+                    
+                    try(PreparedStatement getPasswordUserPst = connectDB.prepareStatement(getPasswordUser)){
+                        
+                        getPasswordUserPst.setInt(1, this.codeID);
+                        
+                        ResultSet resultGetPasswordUser = getPasswordUserPst.executeQuery();
+                        
+                        if(resultGetPasswordUser.next()){
+                            String oldPassword = resultGetPasswordUser.getString("password");
+                            
+                            if(!oldPassword.equals(password_1)){
+                                
+                                String setNewPassword = "UPDATE registros SET password = ? WHERE id = ?";
+
+                                try(PreparedStatement setNewPasswordPst = connectDB.prepareStatement(setNewPassword)){
+
+                                    password_1 = hashPassword(password_1);
+                                    
+                                    setNewPasswordPst.setString(1, password_1);
+                                    setNewPasswordPst.setInt(2, this.codeID);
+
+                                    int rowsAffected = setNewPasswordPst.executeUpdate();
+
+                                    if(rowsAffected > 0){
+                                        System.out.println("Contraseña cambiada con exito");
+                                        inputPasswordOfForgot.setText("");
+                                        inputPasswordOfForgot2.setText("");
+                                        containerSendPassword.setVisible(false);
+                                    }
+
+                                }catch(Exception e){
+                                    e.printStackTrace();
+                                }
+                                
+                            }else{
+                                System.out.println("Su contraseña nueva no puede ser igual a la antigua");
+                            }
+                            
+                        }else{
+                            System.out.println("No se encontro el id");
+                        }
+                        
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                
+                }else{
+                    System.out.println("La contraseña debe tener un mínimo de 8 caracteres");
+                }
+                
+            }else{
+                System.out.println("Ambos campos son obligatorios");
+            }
+            
+        }else{
+            System.out.println("Ambas contraseñas deben ser iguales");
         }
         
     }
@@ -751,59 +878,65 @@ public class Controller implements Initializable {
         }
     }
     
-    @FXML
-    private void addMusic(ActionEvent event) throws IOException {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleccionar archivos MP3");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos MP3", "*.mp3"));
+@FXML
+private void addMusic(ActionEvent event) {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Seleccionar archivos MP3");
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos MP3", "*.mp3"));
 
-        // Habilitar la selección múltiple
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos MP3", "*.mp3"));
-        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
+    // Habilitar la selección múltiple
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos MP3", "*.mp3"));
+    List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
 
-        if (selectedFiles != null && !selectedFiles.isEmpty()) {
-            ObservableList<MusicItem> itemsToAdd = FXCollections.observableArrayList();
+    if (selectedFiles != null && !selectedFiles.isEmpty()) {
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                ObservableList<MusicItem> itemsToAdd = FXCollections.observableArrayList();
 
-            if (!listMusic.getItems().isEmpty() && listMusic.getItems().get(0).getNameMusic().equals("No se han encontrado canciones")) {
-                listMusic.getItems().clear();
-            }
-
-            for (File selectedFile : selectedFiles) {
-                String musicName = selectedFile.getName();
-                String musicPath = selectedFile.getAbsolutePath();
-                String musicURL = selectedFile.toURI().toString();
-
-                boolean musicAlreadyExists = listMusic.getItems().stream()
-                        .anyMatch(item -> item.getMusicURL().equals(musicURL));
-
-                if (!musicAlreadyExists) {
-//                    String projectDirectory = System.getProperty("user.dir") + File.separator + "src" + File.separator + "Sounds" + File.separator + musicName;
-//                    String originDirectory = musicPath;
-
-                    MusicItem newMusicItem = new MusicItem(containerRectangles, musicPath, musicName, musicURL, true, nameMusicReproductor, durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound, backwardSound, nextSound, backSound, iconVolume, listMusic);
-                    listMusic.getItems().add(newMusicItem);
-                    verifyIsFirstMusic();
-
-//                    try (InputStream inputStream = new FileInputStream(originDirectory);
-//                         OutputStream outputStream = new FileOutputStream(projectDirectory)) {
-//
-//                        byte[] buffer = new byte[4096];
-//                        int bytesRead;
-//
-//                        while ((bytesRead = inputStream.read(buffer)) != -1) {
-//                            outputStream.write(buffer, 0, bytesRead);
-//                        }
-//
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-
-                    numMusic = listMusic.getItems().size() + 1;
-                    saveRoutesDB(musicPath);
+                if (!listMusic.getItems().isEmpty() && listMusic.getItems().get(0).getNameMusic().equals("No se han encontrado canciones")) {
+                    listMusic.getItems().clear();
                 }
+
+                for (File selectedFile : selectedFiles) {
+                    String musicName = selectedFile.getName();
+                    String musicPath = selectedFile.getAbsolutePath();
+                    String musicURL = selectedFile.toURI().toString();
+
+                    boolean musicAlreadyExists = listMusic.getItems().stream()
+                            .anyMatch(item -> item.getMusicURL().equals(musicURL));
+
+                    if (!musicAlreadyExists) {
+                        MusicItem newMusicItem = new MusicItem(
+                                containerRectangles, musicPath, musicName, musicURL, true, nameMusicReproductor,
+                                durationSound, timeSound, sliderVolume, playAndPauseSound, forwardSound,
+                                backwardSound, nextSound, backSound, iconVolume, listMusic);
+
+                        itemsToAdd.add(newMusicItem);
+                        numMusic = listMusic.getItems().size() + 1;
+                        saveRoutesDB(musicPath);
+                    }
+                }
+
+                // Realizar actualizaciones de la interfaz de usuario después de completar el bucle
+                Platform.runLater(() -> {
+                    listMusic.getItems().addAll(itemsToAdd);
+                    verifyIsFirstMusic();
+                });
+
+                return null;
             }
-        }
+        };
+
+        // Configurar manejo de excepciones, si es necesario
+        task.setOnFailed(e -> task.getException().printStackTrace());
+
+        // Iniciar la tarea en segundo plano
+        Thread thread = new Thread(task);
+        thread.setDaemon(true); // Hacer que el hilo sea daemon para que se cierre cuando la aplicación principal se cierre
+        thread.start();
     }
+}
 
     @FXML
     private void eventRegister() throws SQLException {

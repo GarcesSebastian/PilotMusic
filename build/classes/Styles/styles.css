@@ -54,3 +54,27 @@ Slider .value {
     -fx-text-fill: white;
 }
 
+#btnSendPassword:hover{
+    -fx-background-color: #0056b3;
+}
+
+#btnSendPassword{
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+}
+
+#btnLoginOfLogin {
+    -fx-background-color: tomato;
+    -fx-background-radius: 20;
+    -fx-text-fill: white;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    transition: all 3s ease-in-out;
+}
+
+#btnLoginOfLogin:hover {
+    -fx-scale-x: 1.025;
+    -fx-scale-y: 1.025;
+}
+
+
